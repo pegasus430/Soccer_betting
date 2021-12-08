@@ -5,104 +5,8 @@ import threading
 import requests
 from bs4 import BeautifulSoup
 import argparse
-import mysql.connector
-import mysql.connector.pooling
+from mysql_connections import mydb, mycursor, MySQLPool
 
-dbconfig = {
-    "host": "localhost",
-    "port": "3306",
-    "user": "root",
-    "password": "P@ssw0rd2021",
-    "database": "soccer",
-    "auth_plugin": 'mysql_native_password'
-}
-
-
-class MySQLPool(object):
-    def __init__(self, host="localhost", port="3306", user="root",
-                 password="P@ssw0rd2021", database="soccer", pool_name="mypool", pool_size=3,
-                 auth_plugin="mysql_native_password"):
-        res = {}
-        self._host = host
-        self._port = port
-        self._user = user
-        self._password = password
-        self._database = database
-        self._auth_plugin = 'mysql_native_password'
-
-        res["host"] = self._host
-        res["port"] = self._port
-        res["user"] = self._user
-        res["password"] = self._password
-        res["database"] = self._database
-        res['auth_plugin'] = 'mysql_native_password'
-        self.dbconfig = res
-        self.pool = self.create_pool(pool_name=pool_name, pool_size=pool_size)
-
-    def create_pool(self, pool_name="mypool", pool_size=5):
-        pool = mysql.connector.pooling.MySQLConnectionPool(
-            pool_name=pool_name,
-            pool_size=pool_size,
-            pool_reset_session=True,
-            **self.dbconfig)
-        return pool
-
-    def close(self, conn, cursor):
-        """
-        A method used to close connection of mysql.
-        :param conn: 
-        :param cursor: 
-        :return: 
-        """
-        cursor.close()
-        conn.close()
-
-    def execute(self, sql, args=None, commit=False):
-        """
-        Execute a sql, it could be with args and with out args. The usage is 
-        similar with execute() function in module pymysql.
-        :param sql: sql clause
-        :param args: args need by sql clause
-        :param commit: whether to commit
-        :return: if commit, return None, else, return result
-        """
-        # get connection form connection pool instead of create one.
-        conn = self.pool.get_connection()
-        cursor = conn.cursor()
-        if args:
-            cursor.execute(sql, args)
-        else:
-            cursor.execute(sql)
-        if commit is True:
-            conn.commit()
-            self.close(conn, cursor)
-            return "Success"
-        else:
-            res = cursor.fetchall()
-            self.close(conn, cursor)
-            return res
-
-    def executemany(self, sql, args, commit=False):
-        """
-        Execute with many args. Similar with executemany() function in pymysql.
-        args should be a sequence.
-        :param sql: sql clause
-        :param args: args
-        :param commit: commit or not.
-        :return: if commit, return None, else, return result
-        """
-        # get connection form connection pool instead of create one.
-        conn = self.pool.get_connection()
-        cursor = conn.cursor()
-        cursor.executemany(sql, args)
-        if commit is True:
-            conn.commit()
-            self.close(conn, cursor)
-            return None
-        else:
-            res = cursor.fetchall()
-            self.close(conn, cursor)
-            return res
 
 
 def switch_season(argument):
@@ -148,7 +52,7 @@ def switch_league(argument):
     return switcher.get(argument, "null")
 
 
-scheduler = sched.scheduler(time.time, time.sleep);
+scheduler = sched.scheduler(time.time, time.sleep)
 
 count = 0
 index = 0
@@ -180,9 +84,9 @@ def get_Real_LeagueUrl(argument):
     return switcher.get(argument, "null")
 
 
-def doing_team_news(season, league_id, date, time, home_team_name_id, away_team_name_id):
-    print("       ", season, league_id, date, time, home_team_name_id, away_team_name_id)
-    mysql_pool = MySQLPool(**dbconfig)
+def doing_team_news(season, league_id, date, time, home_team_name_id, away_team_name_id, match_id):
+    print("       ", season, league_id, date, time, home_team_name_id, away_team_name_id, match_id)
+    mysql_pool = MySQLPool()
     # mycursor = mydb.cursor()
     league_url = get_Real_LeagueUrl(int(league_id))
     # print(league_url)
@@ -203,35 +107,36 @@ def doing_team_news(season, league_id, date, time, home_team_name_id, away_team_
             tr_results.remove(ev_tr)
 
     match_date = ""
+    url="https://www.worldfootball.net/report/super-liga-2021-2022-fk-vozdovac-vojvodina"
+    return get_team_score_strength(url, home_team_name_id, away_team_name_id, switch_season(season), match_id)
+    # for i in range(0, len(tr_results)):
+    #
+    #     all_td = tr_results[i].find_all("td")
+    #     if all_td[0].text != "":
+    #         match_date = convert_strDate_sqlDateFormat(all_td[0].text)
+    #
+    #     start_time = all_td[1].text
+    #
+    #     sql = f'SELECT team_id FROM team_list WHERE team_name = "{all_td[2].text}" UNION ' \
+    #           f'SELECT team_id FROM team_list WHERE team_name = "{all_td[4].text}"'
+    #
+    #     myresult = mysql_pool.execute(sql)
+    #     # myresult = mycursor.fetchall()
+    #     cur_home_team_id = myresult[0][0]
+    #     cur_away_team_id = myresult[1][0]
+    #     # print(f'   {type(match_date)} = {type(date)} , {type(start_time)} = {type(time)} , {type(home_team_name_id)} = {type(cur_home_team_id)}')
+    #     if (match_date == date) & (home_team_name_id == cur_home_team_id) & (away_team_name_id == cur_away_team_id):
+    #         a_results = all_td[5].find_all('a')
+    #
+    #         if len(a_results):
+    #             url = "https://www.worldfootball.net" + a_results[0]['href']
+    #             print(url)
+    #             return get_team_score_strength(url, home_team_name_id, away_team_name_id, switch_season(season), match_id)
+    #
+    #     i += 1
 
-    for i in range(0, len(tr_results)):
 
-        all_td = tr_results[i].find_all("td")
-        if all_td[0].text != "":
-            match_date = convert_strDate_sqlDateFormat(all_td[0].text)
-
-        start_time = all_td[1].text
-
-        sql = f'SELECT team_id FROM team_list WHERE team_name = "{all_td[2].text}" UNION ' \
-              f'SELECT team_id FROM team_list WHERE team_name = "{all_td[4].text}"'
-
-        myresult = mysql_pool.execute(sql)
-        # myresult = mycursor.fetchall()
-        cur_home_team_id = myresult[0][0]
-        cur_away_team_id = myresult[1][0]
-        # print(f'   {type(match_date)} = {type(date)} , {type(start_time)} = {type(time)} , {type(home_team_name_id)} = {type(cur_home_team_id)}')
-        if (match_date == date) & (home_team_name_id == cur_home_team_id) & (away_team_name_id == cur_away_team_id):
-            a_results = all_td[5].find_all('a')
-
-            if len(a_results):
-                url = "https://www.worldfootball.net" + a_results[0]['href']
-                # print(url)
-                return get_team_score_strength(url, home_team_name_id, away_team_name_id, switch_season(season))
-
-        i += 1
-
-
-def get_team_score_strength(url, home_team_id, away_team_id, season_id):
+def get_team_score_strength(url, home_team_id, away_team_id, season_id, match_id=None):
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")
     results = soup.find_all('table', class_="standard_tabelle")
@@ -249,6 +154,8 @@ def get_team_score_strength(url, home_team_id, away_team_id, season_id):
     hometeam_data = get_data_from_hometeam(home_team_info, home_team_id, season_id)
     awayteam_data = get_data_from_awayteam(away_team_info, away_team_id, season_id)
 
+    if hometeam_data and awayteam_data:
+        insert_match_team_player_info(url=url,last_match_id=match_id, home_team_id=home_team_id, away_team_id=away_team_id)
     return {**hometeam_data, **awayteam_data}
 
 
@@ -302,7 +209,7 @@ def get_data_from_awayteam(team_info, team_id, season_id):
 
 def get_player_score_season(player_id, season_id):
     # mycursor = mydb.cursor()
-    mysql_pool = MySQLPool(**dbconfig)
+    mysql_pool = MySQLPool()
     sql = f'SELECT A.season_id, A.goals, A.started FROM player_career AS A INNER JOIN season AS B ON A.season_id = B.season_id WHERE player_id = {player_id} ORDER BY B.season_title ASC'
     # mycursor.execute(sql)
 
@@ -397,7 +304,7 @@ def get_player_id(player_name, player_href, team_id):
     player_number = player_adding_info[5]
     img_src_flag = 0
     # mycursor = mydb.cursor()
-    mysql_pool = MySQLPool(**dbconfig)
+    mysql_pool = MySQLPool()
     if 'gross/0.' in player_adding_info[0]:  # No image, so empty man
         sql = f'SELECT * FROM playerlist WHERE player_name like "%{player_name}" and birthday = "{player_birthday}"'
         # mycursor.execute(sql)
@@ -493,6 +400,7 @@ def get_player_id(player_name, player_href, team_id):
 
 
 def get_more_player_info(url, player_name):
+    mysql_pool = MySQLPool()
     page = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
     soup = BeautifulSoup(page.content, "html.parser")
 
@@ -574,7 +482,7 @@ def convert_strDate_sqlDateFormat(str_date):
 
 def get_team_strength_threading(match_id):
     # mycursor_threading = mydb.cursor()
-    mysql_pool = MySQLPool(**dbconfig)
+    mysql_pool = MySQLPool()
     print(f"  - starting team strength of {match_id} 's match")
     sql = f"SELECT * from season_match_plan where match_id = {match_id}"
     result = mysql_pool.execute(sql)
@@ -588,7 +496,7 @@ def get_team_strength_threading(match_id):
         season_title_result = mysql_pool.execute(sql)
         season_title_result = season_title_result[0][0]
         season_title = season_title_result.replace('/', '-')
-        news_result = doing_team_news(season_title, result[2], str(result[3]), result[4], result[5], result[6])
+        news_result = doing_team_news(season_title, result[2], str(result[3]), result[4], result[5], result[6],match_id)
         print("      # team news result :", news_result)
 
         match_time = result[4]
@@ -627,7 +535,7 @@ def get_team_strength_threading(match_id):
 
 def make_schedule_ofToday():
     # get match list of today
-    mysql_pool = MySQLPool(**dbconfig)
+    mysql_pool = MySQLPool()
     today = dt.datetime.today().strftime('%Y-%m-%d')
     (year, month, day) = today.split('-')
     year = int(year)
@@ -656,6 +564,275 @@ def make_schedule_ofToday():
 
 def main():
     make_schedule_ofToday()
+
+
+import urllib3, certifi
+
+
+def insert_match_team_player_info(url, last_match_id, home_team_id, away_team_id):
+    global added_matches_count
+    http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
+
+    page = requests.get(url)
+
+    soup = BeautifulSoup(page.content, "html.parser")
+    results = soup.find_all('table', class_="standard_tabelle")
+    goal_player_id_list = []
+    assist_player_id_list = []
+
+    print("    ------------")
+    if len(results) < 7:
+        goal_assist_container = results[1]
+        home_team_container = results[2]
+        away_team_container = results[3]
+    else:
+        goal_assist_container = results[1]
+        home_team_container = results[3]
+        away_team_container = results[4]
+
+    tr_results = goal_assist_container.find_all("tr")
+    for every_tr in tr_results:
+        # if video exist
+        tdlist = every_tr.find_all('td')
+        if len(tdlist) > 1:
+            if tdlist[1].attrs.get('style'):  # td has its style? padding-left: If having, will be away team
+                team_id_for_player = away_team_id
+            else:
+                team_id_for_player = home_team_id
+            a_results = tdlist[1].find_all("a")  # player_name container
+            if a_results:
+                goal_player_id_list.append(
+                    get_player_id(a_results[0]['title'], a_results[0]['href'], team_id_for_player))
+                if len(a_results) > 1:
+                    assist_player_id_list.append(
+                        get_player_id(a_results[1]['title'], a_results[1]['href'], team_id_for_player))
+    # print("    goal list - ", goal_player_id_list, "assist list - ", assist_player_id_list)
+
+    a_results = home_team_container.find_all("a")
+    if len(a_results) > 10:
+        for i in range(0, 11):
+            id = get_player_id(a_results[i]['title'], a_results[i]['href'], home_team_id)
+            update_insert_PlayerCareer(id, a_results[i]['href'])
+            goals = goal_player_id_list.count(id)
+            assists = assist_player_id_list.count(id)
+
+            sql = "INSERT INTO match_team_player_info ( match_id, team_id , player_id , " \
+                  "goals, assists)" \
+                  "VALUES (%s, %s , %s, %s, %s)"
+            val = (last_match_id, home_team_id, id, goals, assists)
+            mycursor.execute(sql, val)
+            mydb.commit()
+            print(" inserted home team player - ", i + 1, a_results[i]['title'], id, goals, assists)
+        ################################ End insert home team info ##########################################
+        a_results = away_team_container.find_all("a")
+        for i in range(0, 11):
+            id = get_player_id(a_results[i]['title'], a_results[i]['href'], away_team_id)
+            update_insert_PlayerCareer(id, a_results[i]['href'])
+            goals = goal_player_id_list.count(id)
+            assists = assist_player_id_list.count(id)
+
+            sql = "INSERT INTO match_team_player_info ( match_id, team_id , player_id , " \
+                  "goals, assists)" \
+                  "VALUES (%s, %s , %s, %s, %s)"
+            val = (last_match_id, away_team_id, id, goals, assists)
+            mycursor.execute(sql, val)
+            mydb.commit()
+            print(" inserted away team player - ", i + 1, a_results[i]['title'], id, goals, assists)
+
+    ################################ End insert away team info ##########################################
+
+
+def update_insert_PlayerCareer(player_id, player_href):
+    sql = f'SELECT * FROM player_career WHERE player_id ="{player_id}"'
+    mycursor.execute(sql)
+    myresult = mycursor.fetchall()
+    href_info = player_href
+    url = "https://www.worldfootball.net" + href_info + "/2/"
+
+    page = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
+
+    soup = BeautifulSoup(page.content, "html.parser")
+    ################################### page url check end ###############################
+    if len(myresult):  # player data is already existed in career table , so have to update or insert
+        print(f"{player_id}th data is already added! so will update ")
+        extra_results = soup.find('table', class_="standard_tabelle")
+        extra_tr_results = extra_results.find_all("tr")
+        count = 1
+        tr_index = 1
+        for tr in extra_tr_results:
+            all_td = tr.find_all("td")
+
+            if (len(all_td)):
+                if (tr_index > 1) and len(all_td) < 2:  # no carrer
+                    break
+                else:
+                    flag = all_td[0].find('img')['src']
+                    league_id = fn_Get_LeagueId(all_td[1].text, all_td[1].find('a')['href'])
+                    season_id = fn_Get_SeasonId(all_td[2].text)
+
+                    if "2018" in all_td[2].text:  # 2018 lower season no updated and will break
+                        print("    now season is lower than 2018 , so break")
+                        break
+
+                    team_id = fn_Get_TeamId(all_td[3].text)
+                    sql = f'SELECT * from player_career where player_id = {player_id} and league_id = {league_id} and season_id = {season_id} and team_id = {team_id}'
+                    mycursor.execute(sql)
+                    career_result = mycursor.fetchall()
+                    if (len(career_result)):  # if the season and league is existing , will update them
+                        sql = f"update player_career set matches = {fn_filter_value(all_td[4].text)} , \
+								goals = {fn_filter_value(all_td[5].text)}, \
+								started = {fn_filter_value(all_td[6].text)}, \
+								s_in = {fn_filter_value(all_td[7].text)},  \
+								s_out = {fn_filter_value(all_td[8].text)}, \
+								yellow = {fn_filter_value(all_td[9].text)}, \
+								s_yellow = {fn_filter_value(all_td[10].text)}, \
+								red = {fn_filter_value(all_td[11].text)}  \
+								where player_id = {player_id} and league_id = {league_id} and season_id = {season_id} and team_id = {team_id}"
+                        mycursor.execute(sql)
+                        mydb.commit()
+                        print(f"   Updated new row-{count}")
+                        count = count + 1
+                    else:  # if the data not existing in DB, will inset this
+                        sql = f"INSERT INTO player_career (player_id, flag, league_id, season_id, team_id, matches, goals, started,s_in, s_out, yellow, s_yellow, red ) \
+							VALUES ({player_id},'{flag}', {league_id} ,{season_id}, {team_id}, \
+								{fn_filter_value(all_td[4].text)}, \
+								{fn_filter_value(all_td[5].text)}, \
+								{fn_filter_value(all_td[6].text)}, \
+								{fn_filter_value(all_td[7].text)}, \
+								{fn_filter_value(all_td[8].text)}, \
+								{fn_filter_value(all_td[9].text)}, \
+								{fn_filter_value(all_td[10].text)}, \
+								{fn_filter_value(all_td[11].text)})"
+
+                        mycursor.execute(sql)
+                        mydb.commit()
+                        print(f"   added extra new row-{count}")
+                        count = count + 1
+            tr_index = tr_index + 1
+
+    else:  # NO player data  , so have to insert
+        ################################### career check start ###############################
+        extra_results = soup.find('table', class_="standard_tabelle")
+        extra_tr_results = extra_results.find_all("tr")
+        count = 1
+        tr_index = 1
+        for tr in extra_tr_results:
+            all_td = tr.find_all("td")
+            http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
+            if (len(all_td)):
+                if (tr_index > 1) and len(all_td) < 2:  # no carrer
+                    break
+                else:
+                    flag = all_td[0].find('img')['src']
+                    league_id = fn_Get_LeagueId(all_td[1].text, all_td[1].find('a')['href'])
+                    season_id = fn_Get_SeasonId(all_td[2].text)
+                    team_id = fn_Get_TeamId(all_td[3].text)
+
+                    sql = f"INSERT INTO player_career (player_id, flag, league_id, season_id, team_id, matches, goals, started,s_in, s_out, yellow, s_yellow, red ) \
+							VALUES ({player_id},'{flag}', {league_id} ,{season_id}, {team_id}, \
+						{fn_filter_value(all_td[4].text)}, \
+						{fn_filter_value(all_td[5].text)}, \
+						{fn_filter_value(all_td[6].text)}, \
+						{fn_filter_value(all_td[7].text)}, \
+						{fn_filter_value(all_td[8].text)}, \
+						{fn_filter_value(all_td[9].text)}, \
+						{fn_filter_value(all_td[10].text)}, \
+						{fn_filter_value(all_td[11].text)})"
+
+                    mycursor.execute(sql)
+                    mydb.commit()
+                    print(f"   added extra new row-{count}")
+                    count = count + 1
+            tr_index = tr_index + 1
+
+
+def fn_Get_LeagueId(league_dname, league_extra_info):
+    realLeague = league_extra_info.split("/")[2]
+    if league_dname == "Bundesliga":
+        if realLeague == "bundesliga":
+            return 8
+        if realLeague == "aut-bundesliga":
+            return 1
+        else:
+            sql = f'SELECT league_id FROM league where league_title = "{realLeague}"'  # if league dname's duplicate exists, then search league_title
+            mycursor.execute(sql)
+            myresult = mycursor.fetchone()
+            if myresult:
+                return myresult[0]
+            else:
+                sql = f'INSERT INTO league (league_dname , league_title ) VALUES ("{league_dname}, {realLeague}")'
+                mycursor.execute(sql)
+                mydb.commit()
+                print("   -------added new league-" + league_dname + ":" + realLeague)
+                return mycursor.lastrowid
+    if league_dname == "Super League":
+        # realLeague = league_extra_info.split("/")[2]
+        if realLeague == "gre-super-league":
+            return 9
+        if realLeague == "sui-super-league":
+            return 18
+        else:
+            sql = f'SELECT league_id FROM league where league_title = "{realLeague}"'  # if league dname's duplicate exists, then search league_title
+            mycursor.execute(sql)
+            myresult = mycursor.fetchone()
+            if myresult:
+                return myresult[0]
+            else:
+                sql = f'INSERT INTO league (league_dname , league_title ) VALUES ("{league_dname}, {realLeague}")'
+                mycursor.execute(sql)
+                mydb.commit()
+                print("   -------added new league-" + league_dname + ":" + realLeague)
+                return mycursor.lastrowid
+
+    sql = f'SELECT league_id FROM league where league_dname = "{league_dname}"'
+    mycursor.execute(sql)
+    myresult = mycursor.fetchone()
+    if myresult:
+        return myresult[0]
+    else:
+        sql = f'INSERT INTO league (league_dname , league_title ) VALUES ("{league_dname}", "{realLeague}")'
+        mycursor.execute(sql)
+        mydb.commit()
+        print("   -------added new league-" + league_dname + ":" + realLeague)
+        return mycursor.lastrowid
+
+
+
+
+def fn_Get_SeasonId(season_title):
+    sql = f'SELECT season_id FROM season where season_title = "{season_title}"'
+    mycursor.execute(sql)
+    myresult = mycursor.fetchone()
+    if myresult:
+        return myresult[0]
+    else:
+        sql = f'INSERT INTO season (season_title ) VALUES ("{season_title}")'
+        mycursor.execute(sql)
+        mydb.commit()
+        print("   ----------added new season-" + season_title)
+        return mycursor.lastrowid
+
+
+def fn_Get_TeamId(team_name):
+    sql = f'SELECT team_id FROM team_list where team_name = "{team_name}"'
+    mycursor.execute(sql)
+    myresult = mycursor.fetchone()
+    if myresult:
+        return myresult[0]
+    else:
+        sql = f'INSERT INTO team_list (team_name ) VALUES ("{team_name}")'
+
+        mycursor.execute(sql)
+        mydb.commit()
+        print("   ---------added new team-" + team_name)
+        return mycursor.lastrowid
+
+
+def fn_filter_value(str):
+    if '?' in str:
+        return 0
+    else:
+        return int(str)
 
 
 if __name__ == "__main__":
