@@ -107,33 +107,32 @@ def doing_team_news(season, league_id, date, time, home_team_name_id, away_team_
             tr_results.remove(ev_tr)
 
     match_date = ""
-    url="https://www.worldfootball.net/report/super-liga-2021-2022-fk-vozdovac-vojvodina"
-    return get_team_score_strength(url, home_team_name_id, away_team_name_id, switch_season(season), match_id)
-    # for i in range(0, len(tr_results)):
-    #
-    #     all_td = tr_results[i].find_all("td")
-    #     if all_td[0].text != "":
-    #         match_date = convert_strDate_sqlDateFormat(all_td[0].text)
-    #
-    #     start_time = all_td[1].text
-    #
-    #     sql = f'SELECT team_id FROM team_list WHERE team_name = "{all_td[2].text}" UNION ' \
-    #           f'SELECT team_id FROM team_list WHERE team_name = "{all_td[4].text}"'
-    #
-    #     myresult = mysql_pool.execute(sql)
-    #     # myresult = mycursor.fetchall()
-    #     cur_home_team_id = myresult[0][0]
-    #     cur_away_team_id = myresult[1][0]
-    #     # print(f'   {type(match_date)} = {type(date)} , {type(start_time)} = {type(time)} , {type(home_team_name_id)} = {type(cur_home_team_id)}')
-    #     if (match_date == date) & (home_team_name_id == cur_home_team_id) & (away_team_name_id == cur_away_team_id):
-    #         a_results = all_td[5].find_all('a')
-    #
-    #         if len(a_results):
-    #             url = "https://www.worldfootball.net" + a_results[0]['href']
-    #             print(url)
-    #             return get_team_score_strength(url, home_team_name_id, away_team_name_id, switch_season(season), match_id)
-    #
-    #     i += 1
+
+    for i in range(0, len(tr_results)):
+
+        all_td = tr_results[i].find_all("td")
+        if all_td[0].text != "":
+            match_date = convert_strDate_sqlDateFormat(all_td[0].text)
+
+        start_time = all_td[1].text
+
+        sql = f'SELECT team_id FROM team_list WHERE team_name = "{all_td[2].text}" UNION ' \
+              f'SELECT team_id FROM team_list WHERE team_name = "{all_td[4].text}"'
+
+        myresult = mysql_pool.execute(sql)
+        # myresult = mycursor.fetchall()
+        cur_home_team_id = myresult[0][0]
+        cur_away_team_id = myresult[1][0]
+        # print(f'   {type(match_date)} = {type(date)} , {type(start_time)} = {type(time)} , {type(home_team_name_id)} = {type(cur_home_team_id)}')
+        if (match_date == date) & (home_team_name_id == cur_home_team_id) & (away_team_name_id == cur_away_team_id):
+            a_results = all_td[5].find_all('a')
+
+            if len(a_results):
+                url = "https://www.worldfootball.net" + a_results[0]['href']
+                print(url)
+                return get_team_score_strength(url, home_team_name_id, away_team_name_id, switch_season(season), match_id)
+
+        i += 1
 
 
 def get_team_score_strength(url, home_team_id, away_team_id, season_id, match_id=None):
@@ -552,11 +551,13 @@ def make_schedule_ofToday():
 
         (hour, min) = match_time.split(':')
         hour = int(hour) - 1
+        hour = 8
         min = int(min)
 
         time_tuple = (year, month, day, hour, min, 0, 0, 0, 0)
 
         schedule_time = time.mktime(time_tuple)
+        print(schedule_time)
         scheduler.enterabs(schedule_time, 1, get_team_strength_threading, (match_id,));
         print("# Schedule created for ", match_time, match_id)
     scheduler.run()
