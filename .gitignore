@@ -1,6 +1,7 @@
 build
-__pycache__
+__pycache__/
 
+*.pyc
 get_team_news.spec
 
 
