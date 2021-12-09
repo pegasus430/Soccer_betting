@@ -94,3 +94,4 @@ XlsxWriter==1.2.9
 yarl==1.5.1
 zope.event==4.4
 zope.interface==5.1.0
+mysql-connector-python==8.0.12

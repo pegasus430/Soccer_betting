@@ -3,7 +3,7 @@ import mysql.connector.pooling
 
 
 dbconfig = {
-    "host": "3.68.30.225",
+    "host": "localhost",
     "port": "3306",
     "user": "root",
     "password": "P@ssw0rd2021",
@@ -14,8 +14,8 @@ dbconfig = {
 
 mydb = mysql.connector.connect(
     host="localhost",
-    user="golden",
-    passwd="password",
+    user="root",
+    passwd="P@ssw0rd2021",
     database="soccer"
 )
 mycursor = mydb.cursor()

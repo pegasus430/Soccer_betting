@@ -76,13 +76,13 @@ def get_Real_LeagueUrl(argument):
 	return switcher.get(argument, "null")
 
 def doing_team_news(season, league_id, date, time, home_team_name_id, away_team_name_id):
-	print(season, league_id, date, time, home_team_name_id, away_team_name_id)
+	# print(season, league_id, date, time, home_team_name_id, away_team_name_id)
 
 	league_url = get_Real_LeagueUrl(int(league_id))
-	print(league_url)
+	# print(league_url)
 	if league_url:
 		URL = f"https://www.worldfootball.net/all_matches/{league_url}-{season}/"
-	print(URL)
+	# print(URL)
 	
 	page = requests.get(URL)
 	
