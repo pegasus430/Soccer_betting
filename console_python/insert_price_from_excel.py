@@ -5,7 +5,7 @@ import mysql.connector
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="P@ssw0rd2021",
+    passwd="",
     database="soccer"
 )
 mycursor = mydb.cursor(buffered=True)
@@ -28,7 +28,7 @@ def switch_Month(argument):
     return switcher.get(argument, "null")
     
 def switch_season(argument):
-    	switcher = {
+	switcher = {
 		"2010-2011": 19,
 		"2011-2012": 17,
 		"2012-2013": 15,
@@ -155,4 +155,63 @@ def save_DB(source_path, league,startfrom,Endto):
             successful_adding_count  = successful_adding_count + 1
     print(f"successful_adding_count is {successful_adding_count}")
 
-save_DB("1.xlsx","", 1556,  10660)   #index should be real count +1 eg: Englnad: 3421
+# save_DB("1.xlsx","", 1556,  10660)   #index should be real count +1 eg: Englnad: 3421
+def insert_weekMO_toDB(source_path):
+	loc = (source_path) 
+	wb = xlrd.open_workbook(loc)
+	sheet = wb.sheet_by_index(0)
+	successful_adding_count = 0
+
+	for i in range(1, 119):
+		H = 0 if sheet.cell_value(i, 3) == "" else int(sheet.cell_value(i, 3))
+		D = 0 if sheet.cell_value(i, 4) == "" else int(sheet.cell_value(i, 4))
+		A = 0 if sheet.cell_value(i, 5) == "" else int(sheet.cell_value(i, 5))
+		H_price = 0 if sheet.cell_value(i, 6) == "no price" else round(float(sheet.cell_value(i, 6)), 2)
+		D_price = 0 if sheet.cell_value(i, 7) == "no price" else round(float(sheet.cell_value(i, 7)), 2)
+		A_price = 0 if sheet.cell_value(i, 8) == "no price" else round(float(sheet.cell_value(i, 8)), 2)
+		sql = f"INSERT INTO real_mo_price_cl (refer, c_week_number, total, H, D, A, H_price, D_price, A_price) VALUES ( '{sheet.cell_value(i, 0)}' , {int(sheet.cell_value(i, 1))} , {int(sheet.cell_value(i, 2)) }, {H}, {D},  \
+			{A}, {H_price} , {D_price}, {A_price})"
+		
+		mycursor.execute(sql)
+		mydb.commit()
+		print(f"    {i} row Successfully Inserted!")
+		successful_adding_count  = successful_adding_count + 1
+
+	print(f"successful_adding_count is {successful_adding_count}")
+
+def insert_weekAH_toDB(source_path):
+	loc = (source_path) 
+	wb = xlrd.open_workbook(loc)
+	sheet = wb.sheet_by_index(0)
+	successful_adding_count = 0
+
+	for i in range(1, 119):
+		half_win = 0 if sheet.cell_value(i, 6) == "" else int(sheet.cell_value(i, 6))
+		half_lose = 0 if sheet.cell_value(i, 7) == "" else int(sheet.cell_value(i, 7))
+		win = 0 if sheet.cell_value(i, 3) == "" else int(sheet.cell_value(i, 3))
+		lose = 0 if sheet.cell_value(i, 4) == "" else int(sheet.cell_value(i, 4))
+		flat = 0 if sheet.cell_value(i, 5) == "" else int(sheet.cell_value(i, 5))
+
+		value = sheet.cell_value(i , 11)
+		per = float(value* 100)
+		home_prob = int(round(per, 0))
+
+		home_price = 0 if sheet.cell_value(i, 12) == "no price" or sheet.cell_value(i, 12) == "#DIV" else round(sheet.cell_value(i, 12) , 2)
+		away_price = 0 if sheet.cell_value(i, 14) == "no price" or sheet.cell_value(i, 14) == "#DIV" else round(sheet.cell_value(i, 14) , 2)
+
+
+		sql = f"INSERT INTO real_ah_price_cl (refer, c_week_number, market, win, lose, flat, half_win, half_lose, total_win, total_lose, grand_total, home_prob, home_price, away_prob, away_price)  \
+			VALUES ( '{sheet.cell_value(i, 0)}' , {int(sheet.cell_value(i, 1))} , '+2', {win}, {lose},  \
+			{ flat }, { half_win } , {half_lose} , {float(sheet.cell_value(i, 8))} , {float(sheet.cell_value(i, 9))} , {int(sheet.cell_value(i, 10))} , \
+			{home_prob}, {home_price} , {100 - home_prob} , {away_price})"
+		
+		mycursor.execute(sql)
+		mydb.commit()
+		print(f"   {i} row Successfully Inserted!")
+		successful_adding_count  = successful_adding_count + 1
+
+	print(f"successful_adding_count is {successful_adding_count}")
+
+
+insert_weekMO_toDB('MO.csv')
+# insert_weekAH_toDB("AH+2.csv")
