@@ -84,7 +84,7 @@ updated_count = 0
 def insert_match_team_socre_strength_TPGR():
 	global updated_count
 	
-	sql = f"SELECT * FROM season_match_plan WHERE match_id > 59098"
+	sql = f"SELECT * FROM season_match_plan WHERE match_id > 88570"
 	
 	mycursor.execute(sql)
 	wholeMatchResult = mycursor.fetchall()
