@@ -757,7 +757,7 @@ insert_Price_To_Matchplan("denmark/superliga",        "2022-2023")
 # insert_Price_To_Matchplan("ukraine/premier-league",   "2022-2023")
 insert_Price_To_Matchplan("bulgaria/parva-liga",      "2022-2023")
 # insert_Price_To_Matchplan("czech-republic/1-liga",    "2022-2023")
-# insert_Price_To_Matchplan("croatia/1-hnl",            "2022-2023")
+insert_Price_To_Matchplan("croatia/1-hnl",            "2022-2023")
 # insert_Price_To_Matchplan("hungary/otp-bank-liga",    "2022-2023")
 insert_Price_To_Matchplan("serbia/super-liga",        "2022-2023")
 
