@@ -176,7 +176,7 @@ def get_Team_Cream_text(team_id , season_id):
 
 # MO Cream League combination list of matches from start to cweeknumber
 def get_CreamLeague_MO_source_list(c_weeknumber):
-	sql = f"SELECT b.league_title, home_team_id, away_team_id, total_home_score, total_away_score, season_id FROM season_match_plan as a INNER JOIN league as b on a.league_id = b.league_id  WHERE STATUS = 'END' and (a.season_id < 19 OR a.season_id = 799 OR a.season_id = 64 or a.season_id = 844 or a.season_id = 857) AND a.c_WN < {c_weeknumber} AND a.status = 'END'"
+	sql = f"SELECT b.league_title, home_team_id, away_team_id, total_home_score, total_away_score, season_id FROM season_match_plan as a INNER JOIN league as b on a.league_id = b.league_id  WHERE c_WN > 647 AND c_WN < { c_weeknumber } AND a.status = 'END'"
 	mycursor.execute(sql)
 	matches = mycursor.fetchall()
 	source_list = []
@@ -198,7 +198,7 @@ def get_CreamLeague_MO_source_list(c_weeknumber):
 		else:
 			val = "A"
 			elem_list = [cl_refer_txt, 0, 0 ,1]
-		print(elem_list)
+		# print(elem_list)
 		source_list.append(elem_list)
 
 	print("-----length of source list is ", len(source_list))
@@ -207,7 +207,7 @@ def get_CreamLeague_MO_source_list(c_weeknumber):
 # AH Cream League combination list of matches
 def get_CreamLeague_AH_source_list(c_weeknumber):
     # {'-2' : [['refer_text', win, lose,flat, half_win, half_lose],['refer_text', win, lose, flat,half_win, half_lose]], '-1.75':[]}
-    sql = f"SELECT b.league_title, home_team_id, away_team_id, total_home_score, total_away_score, season_id FROM season_match_plan as a INNER JOIN league as b on a.league_id = b.league_id WHERE STATUS = 'END' AND (a.season_id < 19 OR a.season_id = 799 OR a.season_id = 64 or a.season_id = 844 or a.season_id = 857) AND a.c_WN < {c_weeknumber} AND a.status = 'END'"
+    sql = f"SELECT b.league_title, home_team_id, away_team_id, total_home_score, total_away_score, season_id FROM season_match_plan as a INNER JOIN league as b on a.league_id = b.league_id WHERE a.c_WN > 647 AND a.c_WN < {c_weeknumber} AND a.status = 'END'"
     mycursor.execute(sql)
     matches = mycursor.fetchall()
     result_list = {'-2': [] ,'-1.75':[] ,'-1.5':[] ,'-1.25':[] ,'-1':[] ,'-0.75':[] ,'-0.5':[] ,'-0.25':[] ,'0':[] ,'+0.25':[] ,'+0.5':[] ,'+0.75':[] ,'+1':[] ,'+1.25':[] ,'+1.5':[] ,'+1.75':[] ,'+2':[] }
@@ -228,7 +228,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]
         else:                                       # flat
             elem_list = [cl_refer_txt, 0, 0, 1, 0, 0]
-        print("    -2 market:       ", elem_list)
+        # print("    -2 market:       ", elem_list)
         result_list['-2'].append(elem_list)
 
         # getting -1.75 Market list
@@ -239,7 +239,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]  
         else:                                       # win
             elem_list = [cl_refer_txt, 1, 0, 0 ,0, 0]
-        print("    -1.75 market:   ", elem_list)
+        # print("    -1.75 market:   ", elem_list)
         result_list['-1.75'].append(elem_list)
 
          # getting -1.5 Market list
@@ -250,7 +250,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]  
         else:                                       # flat
             elem_list = [cl_refer_txt, 0, 0, 1 ,0, 0]
-        print("    -1.5 market:   ", elem_list)
+        # print("    -1.5 market:   ", elem_list)
         result_list['-1.5'].append(elem_list)
 
         # getting -1.25 Market list
@@ -261,7 +261,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 0, 0 ,0 , 1]  
         else:                                       # lose
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]
-        print("    -1.25 market:  ", elem_list)
+        # print("    -1.25 market:  ", elem_list)
         result_list['-1.25'].append(elem_list)
 
         # getting -1 Market list
@@ -272,7 +272,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 1, 0 ,0 , 0]  
         else:                                       # flat
             elem_list = [cl_refer_txt, 0, 0, 1 ,0, 0]
-        print("    -1 market: ", elem_list)
+        # print("    -1 market: ", elem_list)
         result_list['-1'].append(elem_list)
 
         # getting -0.75 Market list
@@ -283,7 +283,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 0, 0 ,1, 0]  
         else:                                           # lose
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]
-        print("    -0.75 market: ", elem_list)
+        # print("    -0.75 market: ", elem_list)
         result_list['-0.75'].append(elem_list)
 
          # getting -0.5 Market list
@@ -294,7 +294,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 0, 1 ,0, 0]  
         else:                                           # lose
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]
-        print("    -0.5 market: ", elem_list)
+        # print("    -0.5 market: ", elem_list)
         result_list['-0.5'].append(elem_list)
 
         # getting -0.25 Market list
@@ -305,7 +305,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 0, 0 ,0, 1]  
         else:                                           # lose
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]
-        print("    -0.25 market: ", elem_list)
+        # print("    -0.25 market: ", elem_list)
         result_list['-0.25'].append(elem_list)
 
         # getting 0 Market list
@@ -316,7 +316,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 0, 1 ,0, 0]  
         else:                                           # lose
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]
-        print("    0 market: ", elem_list)
+        # print("    0 market: ", elem_list)
         result_list['0'].append(elem_list)
 
         # getting +0.25 Market list
@@ -327,7 +327,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 0, 0 ,1, 0]  
         else:                                           # lose
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]
-        print("    +0.25 market: ", elem_list)
+        # print("    +0.25 market: ", elem_list)
         result_list['+0.25'].append(elem_list)
 
         # getting +0.5 Market list
@@ -338,7 +338,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 0, 1 ,0, 0]  
         else:                                           # lose
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]
-        print("    +0.5 market: ", elem_list)
+        # print("    +0.5 market: ", elem_list)
         result_list['+0.5'].append(elem_list)
 
         # getting +0.75 Market list
@@ -349,7 +349,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 0, 0 ,0, 1]  
         else:                                           # lose
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]
-        print("    +0.75 market: ", elem_list)
+        # print("    +0.75 market: ", elem_list)
         result_list['+0.75'].append(elem_list)
 
         # getting +1 Market list
@@ -360,7 +360,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 0, 1 ,0, 0]  
         else:                                           # lose
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]
-        print("    +1 market: ", elem_list)
+        # print("    +1 market: ", elem_list)
         result_list['+1'].append(elem_list)
 
         # getting +1.25 Market list
@@ -371,7 +371,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 0, 0 ,1, 0]  
         else:                                           # lose
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]
-        print("    +1.25 market: ", elem_list)
+        # print("    +1.25 market: ", elem_list)
         result_list['+1.25'].append(elem_list)
 
         # getting +1.5 Market list
@@ -382,7 +382,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 0, 1 ,0, 0]  
         else:                                           # lose
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]
-        print("    +1.5 market: ", elem_list)
+        # print("    +1.5 market: ", elem_list)
         result_list['+1.5'].append(elem_list)
 
         # getting +1.75 Market list
@@ -393,7 +393,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 0, 0 ,0, 1]  
         else:                                           # lose
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]
-        print("    +1.75 market: ", elem_list)
+        # print("    +1.75 market: ", elem_list)
         result_list['+1.75'].append(elem_list)
 
         # getting +2 Market list
@@ -404,7 +404,7 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
             elem_list = [cl_refer_txt, 0, 0, 1 ,0, 0]  
         else:                                           # lose
             elem_list = [cl_refer_txt, 0, 1, 0 ,0, 0]
-        print("    +2 market: ", elem_list)
+        # print("    +2 market: ", elem_list)
         result_list['+2'].append(elem_list)
 
         print(" ")
@@ -425,59 +425,116 @@ def insert_real_prcie_to_MO_realpriceTable( C_weeknumber):
 	for refer_text, *values in source_list:               
 		merged[refer_text] = [sum(i) for i in zip(values, merged[refer_text])]
 	print("-----length of grouped list is ", len(merged))
-	
-    # merge format: [['refer_text': [10, 200, 300],['refer_text': [10, 200, 300]]
-	# insert real_price_cl table
+	print("MO merged list ")
+	print(merged.items())
+
+	# get real price list of week 647
+	sql = f"SELECT refer,  H, D, A FROM real_mo_price_cl where c_week_number = 647"
+	mycursor.execute(sql)
+	base_price_list = mycursor.fetchall()
+	# print(base_price)
+	# base price format [('Austrian Tipico BundesligaCream v Non-Cream', 129, 28, 13)]
+
+    # merge format: [('Sweden AllsenskanNon-Cream v Non-Cream', [5, 2, 2])]
+
 	count= 0
+	
 	for item in merged.items(): 
+		refer_find_flag = False
 		refer = item[0]
 		elem = item[1]
-		total = elem[0] + elem[1] + elem[2]
-		if total > 9:
-			sql = f"insert into real_mo_price_cl (refer,c_week_number, total, H, D, A, H_price, D_price, A_price) " \
-				f"values('{refer}',  {C_weeknumber}, {total} , {elem[0]}, {elem[1]}, {elem[2]}, {round(total / elem[0] , 2) if elem[0] > 0 else 0} ,{round(total / elem[1] , 2) if elem[1] > 0 else 0},{round(total / elem[2] , 2) if elem[2] > 0 else 0} )"
-			mycursor.execute(sql);
-			mydb.commit();
-			count += 1
-			print(f"       -week {C_weeknumber} insert item - {refer}, H: {elem[0]}, D: {elem[1]}, A: {elem[2]}, Total: {total}")
+		index = 0
+		for refer_base in base_price_list:
+    			
+			if refer_base[0] == refer:
+				refer_find_flag = True
+				newRefer = (refer, refer_base[1] + elem[0] , refer_base[2] + elem[1]  , refer_base[3] + elem[2])
+
+				# refer_base[1] += elem[0]     	# add merged H count with base list's H count
+				# refer_base[2] += elem[1]		# add D count 
+				# refer_base[3] += elem[2]		# add A count 
+				base_price_list[index] = newRefer
+				break
+			index += 1
+
+		if not refer_find_flag:
+			base_price_list.append((refer, elem[0], elem[1], elem[2]))
+	
+	# insert real_price_cl table
+	for elem in base_price_list:	
+		total = elem[1] + elem[2] + elem[3]
+		sql = f"insert into real_mo_price_cl (refer,c_week_number, total, H, D, A, H_price, D_price, A_price) " \
+			f"values('{elem[0]}',  {C_weeknumber}, {total} ,  {elem[1]}, {elem[2]} , {elem[3]}, {round(total / elem[1] , 2) if elem[1] > 0 else 0} ,{round(total / elem[2] , 2) if elem[2] > 0 else 0},{round(total / elem[3] , 2) if elem[3] > 0 else 0} )"
+		mycursor.execute(sql);
+		mydb.commit();
+		count += 1
+		# print(f"       -week {C_weeknumber} insert item - {elem[0]}, H: {elem[1]}, D: {elem[2]}, A: {elem[3]}, Total: {total}")
+
 	print(f" -week {C_weeknumber} inserted count is {count}")
 	
 # AH real price data into real_ah_price table
 def insert_real_prcie_to_AH_realpriceTable(weeknumber):
     
-    source_list = get_CreamLeague_AH_source_list(weeknumber)
-    for market, each_AH_source_list in source_list.items():
-        
-        merged = defaultdict(lambda: [0, 0, 0,  0, 0])
-        for refer_text, *values in each_AH_source_list:               
-            merged[refer_text] = [sum(i) for i in zip(values, merged[refer_text])]
-        print("-----length of grouped list is ", len(merged))
+	source_list = get_CreamLeague_AH_source_list(weeknumber)
+	for market, each_AH_source_list in source_list.items():
+		
+		merged = defaultdict(lambda: [0, 0, 0,  0, 0])
+		for refer_text, *values in each_AH_source_list:               
+			merged[refer_text] = [sum(i) for i in zip(values, merged[refer_text])]
+		print("-----length of grouped list is ", len(merged))
+		# print("AH merged list ")
+		# print(market, merged)
 
-        # merge format: [['refer_text': [10, 200, 300],['refer_text': [10, 200, 300]]
+        # merge format: [('Sweden AllsenskanNon-Cream v Non-Cream': [8, 0, 1, 0, 0])]
+
+		sql = f"SELECT refer, win, lose, flat, half_win, half_lose FROM real_ah_price_cl where c_week_number = 647 and market = {market}"
+		mycursor.execute(sql)
+		base_price_list = mycursor.fetchall()
+
+		count= 0
+	
+		for item in merged.items(): 
+			refer_find_flag = False
+			refer = item[0]
+			elem = item[1]
+			index = 0
+			for refer_base in base_price_list:
+					
+				if refer_base[0] == refer:
+					refer_find_flag = True
+					newRefer = (refer, refer_base[1] + elem[0] , refer_base[2] + elem[1]  , refer_base[3] + elem[2], refer_base[4] + elem[3], refer_base[5] + elem[4])
+
+					base_price_list[index] = newRefer
+					break
+				index += 1
+
+			if not refer_find_flag:
+				base_price_list.append((refer, elem[0], elem[1], elem[2], elem[3], elem[4]))
+
         # insert real_price_cl table
-        count= 0
-        for item in merged.items(): 
-            refer = item[0]
-            elem = item[1]
-            total_win = elem[0] + elem[3] /2
-            total_lose = elem[1] + elem[4] /2
-            total = elem[0] + elem[1] + elem[2] + elem[3] + elem[4]
+		# base_price_list format [(refer, win, lose, flat, half_win, half_lose )]
+		for elem in base_price_list: 
+			refer = elem[0]
+			
+			total_win = elem[1] + elem[4] /2
+			total_lose = elem[2] + elem[5] /2
+			total =  elem[1] + elem[2] + elem[3] + elem[4] + elem[5]
 
-            if len(market) < 3:             # -2, -1, 0 , +1, +2 grand_total = win + lose
-                grand_total = elem[0] + elem[1]
-            else:                           # -1.75, -1.5 ... grand_total = win + lose + half_win or half_lose
-                grand_total = total
+			if len(market) < 3:             # -2, -1, 0 , +1, +2 grand_total = win + lose
+				grand_total = elem[1] + elem[2]
+			else:                           # -1.75, -1.5 ... grand_total = win + lose + half_win or half_lose
+				grand_total = total
 
-            if total > 9:
-                sql = f"insert into real_ah_price_cl (refer,c_week_number, market , win,lose, flat, half_win, half_lose, total_win, total_lose, grand_total, home_prob, home_price, away_prob, away_price) " \
-                	f"values('{refer}',  {weeknumber}, '{market}', {elem[0]}, {elem[1]}, {elem[2]}, {elem[3]}, {elem[4]}, {total_win}, {total_lose}, {grand_total}, " \
-                    f"{round(total_win * 100 / grand_total , 2) if grand_total > 0 else 0} ,{round(grand_total / total_win , 2) if total_win> 0 else 0},{round(total_lose * 100 / grand_total , 2) if grand_total > 0 else 0} ,{round(grand_total / total_lose , 2) if total_lose > 0 else 0})"
-                mycursor.execute(sql);
-                mydb.commit();
-            count += 1
-            print(f"       -week {weeknumber} AH {market} insert item - {refer}, win: {elem[0]}, lose: {elem[1]}, flat: {elem[2]}, half_win: {elem[3]}, half_lose: {elem[4]}, total: {total}")
+			
+			sql = f"insert into real_ah_price_cl (refer,c_week_number, market , win,lose, flat, half_win, half_lose, total_win, total_lose, grand_total, home_prob, home_price, away_prob, away_price) " \
+				f"values('{refer}',  {weeknumber}, '{market}', {elem[1]}, {elem[2]}, {elem[3]}, {elem[4]}, {elem[5]}, {total_win}, {total_lose}, {grand_total}, " \
+				f"{round(total_win * 100 / grand_total , 2) if grand_total > 0 else 0} ,{round(grand_total / total_win , 2) if total_win> 0 else 0},{round(total_lose * 100 / grand_total , 2) if grand_total > 0 else 0} ,{round(grand_total / total_lose , 2) if total_lose > 0 else 0})"
+			mycursor.execute(sql);
+			mydb.commit();
+			count += 1
+			# print(f"       -week {weeknumber} AH {market} insert item - {refer}, win: {elem[1]}, lose: {elem[2]}, flat: {elem[3]}, half_win: {elem[4]}, half_lose: {elem[5]}, total: {total}")
         
-        print(f" -week {weeknumber} inserted count is {count}")
+		print(f" -week {weeknumber}- market {market} inserted count is {count}")
 
 #update real_price_cl id of each match in season_match_plan
 def update_real_mo_price_id_toSeasonMatchPlanTable(week_number):
@@ -559,8 +616,8 @@ def matching_realpriceid_toSeasonMatchPlanColumn(weeknumber):
     
 def main():
     # for C_weeknumber in range(630, 633):
-    get_realprice_toRealPriceTable_perweek(649)
-    matching_realpriceid_toSeasonMatchPlanColumn(649)
+    get_realprice_toRealPriceTable_perweek(655)
+    matching_realpriceid_toSeasonMatchPlanColumn(655)
     
 	
 if __name__ == "__main__":
