@@ -557,7 +557,7 @@ def update_real_mo_price_id_toSeasonMatchPlanTable(week_number):
 		away_cream_text = get_Team_Cream_text(result[3], result[4])
 		cl_refer_txt = league_title + home_cream_text + ' v ' + away_cream_text
 
-		query_sql = f"select id from real_mo_price_cl where refer = '{cl_refer_txt}' and c_week_number = {week_number}"
+		query_sql = f"select id from real_mo_price_cl where refer = '{cl_refer_txt}' and c_week_number = 647"   # always 647 week
 		mycursor.execute(query_sql)
 		price_id = mycursor.fetchone()
 
@@ -592,7 +592,7 @@ def update_real_AH_price_id_toSeasonMatchPlanTable(week_number):
         away_cream_text = get_Team_Cream_text(result[3], result[4])
         cl_refer_txt = league_title + home_cream_text + ' v ' + away_cream_text
 
-        query_sql = f"select id from real_ah_price_cl where refer = '{cl_refer_txt}' and c_week_number = {week_number}"
+        query_sql = f"select id from real_ah_price_cl where refer = '{cl_refer_txt}' and c_week_number = 647"
         mycursor.execute(query_sql)
         price_id = mycursor.fetchone()
 
@@ -612,11 +612,12 @@ def get_realprice_toRealPriceTable_perweek(weeknumber):
 # insert real_price id of each match into season_match_plan
 def matching_realpriceid_toSeasonMatchPlanColumn(weeknumber):		    
 	update_real_mo_price_id_toSeasonMatchPlanTable(weeknumber)						#  param should be current continuous week.
-    
+	update_real_AH_price_id_toSeasonMatchPlanTable(weeknumber)
     
 def main():
     # for C_weeknumber in range(630, 633):
-    get_realprice_toRealPriceTable_perweek(655)
+    # get_realprice_toRealPriceTable_perweek(655)
+   
     matching_realpriceid_toSeasonMatchPlanColumn(655)
     
 	
