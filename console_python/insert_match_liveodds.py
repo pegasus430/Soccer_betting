@@ -746,7 +746,7 @@ def insert_Price_To_Matchplan(league, season):
 # insert_Price_To_Matchplan("italy/serie-a",            "2022-2023")
 # insert_Price_To_Matchplan("france/ligue-1",           "2022-2023")
 # insert_Price_To_Matchplan("netherlands/eredivisie",   "2022-2023")
-# insert_Price_To_Matchplan("austria/tipico-bundesliga","2022-2023")
+insert_Price_To_Matchplan("austria/tipico-bundesliga","2022-2023")
 # insert_Price_To_Matchplan("portugal/primeira-liga",   "2022-2023")
 # insert_Price_To_Matchplan("greece/super-league",      "2022-2023")
 # insert_Price_To_Matchplan("turkey/super-lig",         "2022-2023")
