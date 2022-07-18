@@ -612,13 +612,13 @@ def get_realprice_toRealPriceTable_perweek(weeknumber):
 # insert real_price id of each match into season_match_plan
 def matching_realpriceid_toSeasonMatchPlanColumn(weeknumber):		    
 	update_real_mo_price_id_toSeasonMatchPlanTable(weeknumber)						#  param should be current continuous week.
-	update_real_AH_price_id_toSeasonMatchPlanTable(weeknumber)
+	# update_real_AH_price_id_toSeasonMatchPlanTable(weeknumber)
     
 def main():
     # for C_weeknumber in range(630, 633):
     # get_realprice_toRealPriceTable_perweek(655)
    
-    matching_realpriceid_toSeasonMatchPlanColumn(655)
+    matching_realpriceid_toSeasonMatchPlanColumn(656)
     
 	
 if __name__ == "__main__":

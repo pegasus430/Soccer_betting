@@ -98,9 +98,10 @@ def switch_league(argument):
     }
     return switcher.get(argument, "null")
   
-total_added_count = 0
+total_inserted_count = 0
+total_updated_count = 0
 def insert_update_odds(basic_match_href_url, match_date, team_text):
-    global total_added_count
+    global total_inserted_count , total_updated_count
     three_way_url = basic_match_href_url + "#1X2;2" 
     OU_url  =  basic_match_href_url + "#over-under;2"
     AH_url = basic_match_href_url + "#ah;2"  
@@ -159,7 +160,7 @@ def insert_update_odds(basic_match_href_url, match_date, team_text):
                 mycursor.execute(sql)
                 mydb.commit()
 
-                total_added_count += 1
+                total_updated_count += 1
                 print("         # Update successful! ")
             else:                       # this is new in odds, so will insert
                 # sql = f"INSERT INTO odds (match_id, bookmaker_id, Home, Draw, Away, Over2d5, Under2d5 , AH2_1, AH2_2, AH1d75_1, AH1d75_2, AH1d5_1, AH1d5_2 , AH1d25_1, AH1d25_2, AH1_1, AH1_2, AH0d75_1, AH0d75_2, AH0d5_1, AH0d5_2, AH0d25_1, AH0d25_2, AH0_1, AH0_2) " \
@@ -187,7 +188,7 @@ def insert_update_odds(basic_match_href_url, match_date, team_text):
                 mycursor.execute(sql)
                 mydb.commit()
 
-                total_added_count += 1
+                total_inserted_count += 1
                 print("        # insert successful! ")
                 
         else:
@@ -761,4 +762,5 @@ insert_Price_To_Matchplan("croatia/1-hnl",            "2022-2023")
 # insert_Price_To_Matchplan("hungary/otp-bank-liga",    "2022-2023")
 insert_Price_To_Matchplan("serbia/super-liga",        "2022-2023")
 
-print(" Total added count is : ", total_added_count)
+print(" Total inserted count is : ", total_inserted_count)
+print(" Total updated count is : ", total_updated_count)
