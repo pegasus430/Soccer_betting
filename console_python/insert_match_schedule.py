@@ -875,7 +875,7 @@ def main():
 	doing_scraping_match_plan("2022-2023", "eng-premier-league")
 	doing_scraping_match_plan("2022-2023", "fra-ligue-1")
 	doing_scraping_match_plan("2022-2023", "bundesliga")
-	# doing_scraping_match_plan("2022-2023", "gre-super-league" , newInsertFlag = True)
+	doing_scraping_match_plan("2022-2023", "gre-super-league")
 	doing_scraping_match_plan("2022-2023", "ita-serie-a")
 	doing_scraping_match_plan("2022-2023", "ned-eredivisie")
 	doing_scraping_match_plan("2022-2023", "por-primeira-liga")
