@@ -36,32 +36,17 @@ chrome_options.add_argument('ignore-certificate-errors')
 chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--blink-settings=imagesEnabled=false')
 chrome_options.add_argument("--disable-extensions")
+chrome_options.add_argument("--disable-browser-side-navigation")
+
 chrome_options.page_load_strategy = 'eager'
-#chrome_options.add_argument("--proxy-server=xxx.xxx.xxx.xxx");
-# PROXY = "188.138.1.126:443" # IP:PORT or HOST:PORT
-
-# chrome_options.add_argument('--proxy-server=%s' % PROXY)
 chrome_options.binary_location = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
-#chrome_options.binary = 'C:\Program Files\Mozilla Firefox\firefox.exe'
-
-profile = webdriver.FirefoxProfile()
-profile.set_preference('browser.download.folderList', 2)
-profile.set_preference('browser.download.manager.showWhenStarting', False)
-profile.set_preference('browser.download.dir', os.getcwd())
-profile.set_preference('browser.helperApps.neverAsk.saveToDisk', ('application/vnd.ms-excel'))
-profile.set_preference('general.warnOnAboutConfig', False)
-profile.update_preferences()
-gecko_path = "C:\Soccer_betting\geckodriver.exe"
-path = "C:\Program Files\Mozilla Firefox\firefox.exe"
-binary = FirefoxBinary(path)
-
 
 site_url = "https://www.oddsportal.com/"
 tfoot_index = 0
 def switch_month(argument):
     switcher = {
       "Jan": "01",
-      "Feb" : "02",
+      "Feb" : "02",  
       "Mar" : "03",
       "Apr" : "04",
       "May" : "05",
@@ -113,18 +98,18 @@ def switch_league(argument):
     return switcher.get(argument, "null")
 
 total_added_count = 0
-def insert_odds(basic_match_href_url, match_date, team_text, current_season):
+def insert_odds(basic_match_href_url, match_date, home_team, away_team):
     global total_added_count
     three_way_url = basic_match_href_url + "#1X2;2" 
     OU_url  =  basic_match_href_url + "#over-under;2"
     AH_url = basic_match_href_url + "#ah;2"  
     
-    home_team_name = team_text.split(' - ')[0]
-    away_team_name = team_text.split(' - ')[1]
+    home_team_name = home_team
+    away_team_name = away_team
     sql = f"SELECT team_id from team_list where team_name_odd = '{home_team_name}'"
-    #print(sql)
     mycursor.execute(sql)
     result = mycursor.fetchall()
+
     if result:
         home_team_id = result[0][0]
         sql = f"SELECT match_id from season_match_plan where date = '{match_date}' and home_team_id = {home_team_id}"
@@ -137,8 +122,9 @@ def insert_odds(basic_match_href_url, match_date, team_text, current_season):
             mycursor.execute(sql)
             result = mycursor.fetchall()
             ################## inserting new odds data #######################################################################
-           
-            if (result and result[0][3] != 0) and (result and str(result[0][42]) >= match_date):                # that wasnt resch game's odd
+            
+            if (result and result[0][3] != 0) and (result and str(result[0][42]) >= match_date):    
+                # that wasnt resch game's odd
                 print("         # No need to insert")
                 return "No update"
             else:
@@ -193,7 +179,7 @@ def insert_odds(basic_match_href_url, match_date, team_text, current_season):
             # f"WHERE match_id = {match_id} and bookmaker_id = 11"
             # mycursor.execute(sql)
             # mydb.commit()
-
+            
             # print("        # Asian Handicap added on existing columns! ")
 
         else:
@@ -209,411 +195,192 @@ def get_odds(turl, OU_url , AH_url):
     ################################ driver setting part start############################
     driver1 = webdriver.Chrome(driverpath, options=chrome_options)
     driver1.get(turl)
+    driver1.refresh()
     time.sleep(0.5)
     ################################ driver setting part End #############################`
-    print("        * start scraping 1X2 data --------------------")
-   
-    
-    # driver1.execute_script("ElementSelect.expand( 'user-header-oddsformat' , 'user-header-oddsformat-expander' )")
-    # time.sleep(1)
-    # #driver1.find_element_by_xpath("//a[text()='EU Odds']").click()
-    # driver1.execute_script("changeOddsFormat(1);")
-    # time.sleep(3)
     
     ############## 3 way result ###################################################################
-    tfoot = driver1.find_elements_by_tag_name('tfoot')
-    
-    high_elemnet = tfoot[0].find_element_by_class_name("highest")   
+    print("        * start scraping 1X2 data --------------------")
+    main = driver1.find_element(By.TAG_NAME, 'main')
+    time.sleep(0.5)
+    high_elemnet = main.find_elements(By.TAG_NAME, '.bg-gray-light')
+    high_elemnet = high_elemnet[2]
+
     if high_elemnet:
-        av_values = high_elemnet.find_elements_by_class_name("right")
+        av_values = high_elemnet.find_elements(By.TAG_NAME, ".justify-center.font-bold")
         if len(av_values) > 2:
           for i in range(0, 3):
             if av_values[i].text == "-":
               highest_list.append("0")
             else: 
               highest_list.append(av_values[i].text)
-          
 
     three_way = {"highest": highest_list}
+    # print("   three_way ", three_way)
     odd_price['3way'] = three_way
     
-    ############### Over / Under result ############################################################
+    # ############### Over / Under result ############################################################
 
     print("        * start scraping Over Under data --------------------")
-    driver1.execute_script("uid(5)._onClick();")
-    
-    time.sleep(1)
+    driver1.get(OU_url)
+    driver1.refresh()
+    time.sleep(0.5)
     # wait = WebDriverWait(driver1, 20)
     # wait.until(EC.presence_of_element_located((By.ID, 'odds-data-table')))
     
     highest_list = []
-    tfoot_OU = []
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Over/Under +2.5 ']")
+    main = driver1.find_element(By.TAG_NAME, 'main')
+    # wait = WebDriverWait(driver1, 20)
+    # wait.until(EC.presence_of_element_located((By.TAG_NAME, '.relative.flex.flex-col')))
+    time.sleep(2)
+    element_OU = main.find_elements(By.TAG_NAME , '.relative.flex.flex-col')
+
     if len(element_OU) == 0:
         print("    Couldn't find Over 2.5 values !")
+        highest_list = ['0', '0']
     else:
-        driver1.execute_script("page.togleTableContent('P-2.50-0-0',this)")
-        time.sleep(1)
-        tfoot_OU = driver1.find_elements_by_tag_name('tfoot')
-
-    if len(tfoot_OU):
-   
-        high_elemnet = tfoot_OU[0].find_element_by_class_name("highest")
-       
-        if high_elemnet:
-            av_values = high_elemnet.find_elements_by_class_name("right")
-            if len(av_values) > 1:
-                for i in  range(0, 2):
-                  if av_values[i+1].text == "-":
-                    highest_list.append("0")
-                  else:
-                    highest_list.append(av_values[i+1].text)
-    else:
-
-       highest_list = ['0', '0']
-        
+        for element in element_OU:
+            OU_name = element.find_element(By.TAG_NAME, 'p')
+            OU_name =  OU_name.text.strip()
+            if OU_name == "Over/Under +2.5":
+                av_values = element.find_elements_by_class_name("colaps-btn")
+                if len(av_values) > 1:
+                    for i in  range(0, 2):
+                        if av_values[i].text == "-":
+                            highest_list.append("0")
+                        else:
+                            highest_list.append(av_values[i].text)
+                else:
+                    highest_list = ['0', '0']
+                break
       
     O_U = {"highest": highest_list}
-    
+    # print("   OU ", O_U)
     odd_price['O/U'] = O_U
     ############### Asian Handicap result ############################################################
+   
     print("        * start scraping Asian Handicap data --------------------")
     AH_odds = {"AH_2":{}, "AH_1.75":{}, "AH_1.5":{}, "AH_1.25":{}, "AH_1":{}, "AH_0.75":{}, "AH_0.5":{}, "AH_0.25":{}, "AH_0":{} , 
     "AH_p2":{}, "AH_p1.75":{}, "AH_p1.5":{}, "AH_p1.25":{}, "AH_p1":{}, "AH_p0.75":{}, "AH_p0.5":{}, "AH_p0.25":{}}
-    driver1.execute_script("uid(4)._onClick();")
-    time.sleep(1)
+    driver1.get(AH_url)
+    driver1.refresh()
+    time.sleep(0.5)
 
-    tfoot_OU = []
-    
-    tfoot_index = 0
-    ##################= Asian Handicap 2.0 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap -2 ']")
-    
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap -2 values !")
-        AH_odds["AH_2"] = { "highest": ['0', '0']}
+    main = driver1.find_element(By.TAG_NAME, 'main')
+    time.sleep(1.5)
+    AH_elements = main.find_elements(By.TAG_NAME , '.relative.flex.flex-col')
+
+    if len(AH_elements) == 0:
+        print("    Couldn't find AH values !")
+        highest_list = ['0', '0']
     else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-            driver1.execute_script("page.togleTableContent('P--2.00-0-0',this)")
-            tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-            AH = get_various_AsianHandicap(tfoot_OU)
-            AH_odds["AH_2"] = AH
-            driver1.execute_script("page.togleTableContent('P--2.00-0-0',this)")
+        ah_values_object = {}
+        for index in range(0, len(AH_elements)):
+            highest_list = []
+            element = AH_elements[index]
+            ah_name = element.find_element(By.TAG_NAME, 'p')
+            ah_name =  ah_name.text.strip()
+            av_values = element.find_elements_by_class_name("colaps-btn")
+            if len(av_values) > 1:
+                for i in  range(0, 2):
+                    if av_values[i].text == '':
+                        highest_list.append('0')
+                    else:
+                        highest_list.append(av_values[i].text)
+            else:
+                highest_list = ['0', '0']
+            ah_values_object[ah_name] = {'highest': highest_list}
+        
+        if('Asian Handicap -2' in ah_values_object) :
+            AH_odds["AH_2"] = ah_values_object['Asian Handicap -2']
         else:
             AH_odds["AH_2"] = { "highest": ['0', '0']}
-        
-    ##################= Asian Handicap 1.75 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap -1.75 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap -1.75 values !")
-        AH_odds["AH_1.75"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-            driver1.execute_script("page.togleTableContent('P--1.75-0-0',this)")
-            tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-            AH = get_various_AsianHandicap(tfoot_OU)
-            AH_odds["AH_1.75"] = AH
-            driver1.execute_script("page.togleTableContent('P--1.75-0-0',this)")
+
+        if('Asian Handicap -1.75' in ah_values_object) :
+            AH_odds["AH_1.75"] = ah_values_object['Asian Handicap -1.75']
         else:
             AH_odds["AH_1.75"] = { "highest": ['0', '0']}
-        
-    ##################= Asian Handicap 1.5 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap -1.5 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap -1.5 values !")
-        AH_odds["AH_1.5"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":  
-            driver1.execute_script("page.togleTableContent('P--1.50-0-0',this)")
-            tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-            AH = get_various_AsianHandicap(tfoot_OU)
-            AH_odds["AH_1.5"] = AH
-            driver1.execute_script("page.togleTableContent('P--1.50-0-0',this)")
+
+        if('Asian Handicap -1.5' in ah_values_object) :
+            AH_odds["AH_1.5"] = ah_values_object['Asian Handicap -1.5']
         else:
             AH_odds["AH_1.5"] = { "highest": ['0', '0']}
-    ##################= Asian Handicap 1.25 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap -1.25 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap -1.25 values !")
-        AH_odds["AH_1.25"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-            driver1.execute_script("page.togleTableContent('P--1.25-0-0',this)")
-            #time.sleep(0.2)
-            tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-            AH = get_various_AsianHandicap(tfoot_OU)
-            AH_odds["AH_1.25"] = AH
-            driver1.execute_script("page.togleTableContent('P--1.25-0-0',this)")
+
+        if('Asian Handicap -1.25' in ah_values_object) :
+            AH_odds["AH_1.25"] = ah_values_object['Asian Handicap -1.25']
         else:
-            AH_odds["AH_1.25"] = { "highest": ['0', '0']} 
-    ##################= Asian Handicap 1 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap -1 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap -1 values !")
-        AH_odds["AH_1"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-            driver1.execute_script("page.togleTableContent('P--1.00-0-0',this)")
-            #time.sleep(0.2)
-            tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-            AH = get_various_AsianHandicap(tfoot_OU)
-            AH_odds["AH_1"] = AH
-            driver1.execute_script("page.togleTableContent('P--1.00-0-0',this)")
+            AH_odds["AH_1.25"] = { "highest": ['0', '0']}
+
+        if('Asian Handicap -1' in ah_values_object) :
+            AH_odds["AH_1"] = ah_values_object['Asian Handicap -1']
         else:
             AH_odds["AH_1"] = { "highest": ['0', '0']}
-    ##################= Asian Handicap 0.75 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap -0.75 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap -0.75 values !")
-        AH_odds["AH_0.75"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-            driver1.execute_script("page.togleTableContent('P--0.75-0-0',this)")
-            #time.sleep(0.2)
-            tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-            AH = get_various_AsianHandicap(tfoot_OU)
-            AH_odds["AH_0.75"] = AH
-            driver1.execute_script("page.togleTableContent('P--0.75-0-0',this)")
+
+        if('Asian Handicap -0.75' in ah_values_object) :
+            AH_odds["AH_0.75"] = ah_values_object['Asian Handicap -0.75']
         else:
             AH_odds["AH_0.75"] = { "highest": ['0', '0']}
-    ##################= Asian Handicap 0.5 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap -0.5 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap -0.5 values !")
-        AH_odds["AH_0.5"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-            driver1.execute_script("page.togleTableContent('P--0.50-0-0',this)")
-            
-            tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-            AH = get_various_AsianHandicap(tfoot_OU)
-            AH_odds["AH_0.5"] = AH
-            driver1.execute_script("page.togleTableContent('P--0.50-0-0',this)")
+
+        if('Asian Handicap -0.5' in ah_values_object) :
+            AH_odds["AH_0.5"] = ah_values_object['Asian Handicap -0.5']
         else:
-            AH_odds["AH_0.5"] = { "highest": ['0', '0']}  
-    ##################= Asian Handicap 0.25 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap -0.25 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap -0.25 values !")
-        AH_odds["AH_0.25"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-          driver1.execute_script("page.togleTableContent('P--0.25-0-0',this)")
-          tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-          AH = get_various_AsianHandicap(tfoot_OU)
-          AH_odds["AH_0.25"] = AH
-          driver1.execute_script("page.togleTableContent('P--0.25-0-0',this)")
+            AH_odds["AH_0.5"] = { "highest": ['0', '0']}
+
+        if('Asian Handicap -0.25' in ah_values_object) :
+            AH_odds["AH_0.25"] = ah_values_object['Asian Handicap -0.25']
         else:
-          AH_odds["AH_0.25"] = { "highest": ['0', '0']}
-    ##################= Asian Handicap 0 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap 0 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap -0.00 values !")
-        AH_odds["AH_0"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-          driver1.execute_script("page.togleTableContent('P-0.00-0-0',this)")
-          
-          tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-          AH = get_various_AsianHandicap(tfoot_OU)
-          AH_odds["AH_0"] = AH
-          driver1.execute_script("page.togleTableContent('P-0.00-0-0',this)")
+            AH_odds["AH_0.25"] = { "highest": ['0', '0']}
+
+        if('Asian Handicap 0' in ah_values_object) :
+            AH_odds["AH_0"] = ah_values_object['Asian Handicap 0']
         else:
-          AH_odds["AH_0"] = { "highest": ['0', '0']}
-    ##################= Asian Handicap +0.25 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap +0.25 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap +0.25 values !")
-        AH_odds["AH_p0.25"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-          driver1.execute_script("page.togleTableContent('P-0.25-0-0',this)")
-          
-          tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-          AH = get_various_AsianHandicap(tfoot_OU)
-          AH_odds["AH_p0.25"] = AH
-          driver1.execute_script("page.togleTableContent('P-0.25-0-0',this)")
+            AH_odds["AH_0"] = { "highest": ['0', '0']}
+
+        if('Asian Handicap +2' in ah_values_object) :
+            AH_odds["AH_p2"] = ah_values_object['Asian Handicap +2']
         else:
-          AH_odds["AH_p0.25"] = { "highest": ['0', '0']}
-    ##################= Asian Handicap +0.5 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap +0.5 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap +0.5 values !")
-        AH_odds["AH_p0.5"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-          driver1.execute_script("page.togleTableContent('P-0.50-0-0',this)")
-          
-          tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-          AH = get_various_AsianHandicap(tfoot_OU)
-          AH_odds["AH_p0.5"] = AH
-          driver1.execute_script("page.togleTableContent('P-0.50-0-0',this)")
+            AH_odds["AH_p2"] = { "highest": ['0', '0']}
+
+        if('Asian Handicap +1.75' in ah_values_object) :
+            AH_odds["AH_p1.75"] = ah_values_object['Asian Handicap +1.75']
         else:
-          AH_odds["AH_p0.5"] = { "highest": ['0', '0']}
-    ##################= Asian Handicap +0.75 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap +0.75 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap +0.75 values !")
-        AH_odds["AH_p0.75"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-          driver1.execute_script("page.togleTableContent('P-0.75-0-0',this)")
-          
-          tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-          AH = get_various_AsianHandicap(tfoot_OU)
-          AH_odds["AH_p0.75"] = AH
-          driver1.execute_script("page.togleTableContent('P-0.75-0-0',this)")
+            AH_odds["AH_p1.75"] = { "highest": ['0', '0']}
+
+        if('Asian Handicap +1.5' in ah_values_object) :
+            AH_odds["AH_p1.5"] = ah_values_object['Asian Handicap +1.5']
         else:
-          AH_odds["AH_p0.75"] = { "highest": ['0', '0']}
-    ##################= Asian Handicap +1 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap +1 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap +1 values !")
-        AH_odds["AH_p1"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-          driver1.execute_script("page.togleTableContent('P-1.00-0-0',this)")
-          
-          tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-          AH = get_various_AsianHandicap(tfoot_OU)
-          AH_odds["AH_p1"] = AH
-          driver1.execute_script("page.togleTableContent('P-1.00-0-0',this)")
+            AH_odds["AH_p1.5"] = { "highest": ['0', '0']}
+
+        if('Asian Handicap +1.25' in ah_values_object) :
+            AH_odds["AH_p1.25"] = ah_values_object['Asian Handicap +1.25']
         else:
-          AH_odds["AH_p1"] = { "highest": ['0', '0']}
-    ##################= Asian Handicap +1.25 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap +1.25 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap +1.25 values !")
-        AH_odds["AH_p1.25"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-          driver1.execute_script("page.togleTableContent('P-1.25-0-0',this)")
-          
-          tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-          AH = get_various_AsianHandicap(tfoot_OU)
-          AH_odds["AH_p1.25"] = AH
-          driver1.execute_script("page.togleTableContent('P-1.25-0-0',this)")
+            AH_odds["AH_p1.25"] = { "highest": ['0', '0']}
+
+        if('Asian Handicap +1' in ah_values_object) :
+            AH_odds["AH_p1"] = ah_values_object['Asian Handicap +1']
         else:
-          AH_odds["AH_p1.25"] = { "highest": ['0', '0']}
-    ##################= Asian Handicap +1.5 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap +1.5 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap +1.5 values !")
-        AH_odds["AH_p1.5"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-          driver1.execute_script("page.togleTableContent('P-1.50-0-0',this)")
-          
-          tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-          AH = get_various_AsianHandicap(tfoot_OU)
-          AH_odds["AH_p1.5"] = AH
-          driver1.execute_script("page.togleTableContent('P-1.50-0-0',this)")
+            AH_odds["AH_p1"] = { "highest": ['0', '0']}
+
+        if('Asian Handicap +0.75' in ah_values_object) :
+            AH_odds["AH_p0.75"] = ah_values_object['Asian Handicap +0.75']
         else:
-          AH_odds["AH_p1.5"] = { "highest": ['0', '0']}
-    ##################= Asian Handicap +1.75 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap +1.75 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap +1.75 values !")
-        AH_odds["AH_p1.75"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-          driver1.execute_script("page.togleTableContent('P-1.75-0-0',this)")
-          
-          tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-          AH = get_various_AsianHandicap(tfoot_OU)
-          AH_odds["AH_p1.75"] = AH
-          driver1.execute_script("page.togleTableContent('P-1.75-0-0',this)")
+            AH_odds["AH_p0.75"] = { "highest": ['0', '0']}
+
+        if('Asian Handicap +0.5' in ah_values_object) :
+            AH_odds["AH_p0.5"] = ah_values_object['Asian Handicap +0.5']
         else:
-          AH_odds["AH_p1.75"] = { "highest": ['0', '0']}
-    ##################= Asian Handicap +2 result#######################################################
-    element_OU = driver1.find_elements_by_xpath("//a[text()='Asian handicap +2 ']")
-    if len(element_OU) == 0:
-        print("           Couldn't find Asian handicap +2 values !")
-        AH_odds["AH_p2"] = { "highest": ['0', '0']}
-    else:
-        container_parent = element_OU[0].find_element_by_xpath('./../../..');
-        style_display = container_parent.value_of_css_property("display")
-        if style_display != "none":
-          driver1.execute_script("page.togleTableContent('P-2.00-0-0',this)")
-          
-          tfoot_OU = container_parent.find_elements_by_tag_name('tfoot')
-          AH = get_various_AsianHandicap(tfoot_OU)
-          AH_odds["AH_p2"] = AH
-          driver1.execute_script("page.togleTableContent('P-2.00-0-0',this)")
+            AH_odds["AH_p0.5"] = { "highest": ['0', '0']}
+
+        if('Asian Handicap +0.25' in ah_values_object) :
+            AH_odds["AH_p0.25"] = ah_values_object['Asian Handicap +0.25']
         else:
-          AH_odds["AH_p2"] = { "highest": ['0', '0']}
-    
+            AH_odds["AH_p0.25"] = { "highest": ['0', '0']}
+
     
     odd_price['AH'] = AH_odds
     driver1.quit()
     return odd_price
 
-def get_various_AsianHandicap(tfoot_OU):
-    global tfoot_index
-  
-    highest_list = []
-    if len(tfoot_OU):
-        #aver_element = tfoot_OU[0].find_element_by_class_name("aver")
-        high_elemnet = tfoot_OU[0].find_element_by_class_name("highest")
-        # if aver_element:
-        #     av_values = aver_element.find_elements_by_class_name("right")
-        #     if len(av_values) > 1:
-        #         for i in  range(0, 2):
-                      
-        #           if (av_values[i+1].text == "-" ) or (av_values[i+1].text == "" ):
-                    
-        #             aver_list.append("0")
-        #           else:
-        #             aver_list.append(av_values[i+1].text)     
-        if high_elemnet:
-            av_values = high_elemnet.find_elements_by_class_name("right")
-            if len(av_values) > 1:
-                for i in  range(0, 2):
-                  if (av_values[i+1].text == "-") or  (av_values[i+1].text == ""):
-                    highest_list.append("0")
-                  else:
-                    highest_list.append(av_values[i+1].text)
-        
-        #tfoot_index += 2
-    else:
-       
-       highest_list = ['0', '0']
-        
-      
-    AH = {"highest": highest_list}
-    return AH
 
 def getDate_from_trTxt(date_txt):
     if 'Today' in date_txt:
@@ -629,66 +396,70 @@ def insert_price_to_matchplan(league, season, breakFlag = True, startPage = None
       
     driver = webdriver.Chrome(driverpath, options=chrome_options)
     current_season = False
-    
-    
-    
-    ####################### going to result page ###############################
+
+    ###################### going to result page ###############################
     if season == "":
         page_url = site_url + "soccer/" + league + season + "/results/"
         current_season = True
     else:
         page_url = site_url +"soccer/" + league + "-" + season + "/results/"
     driver.get(page_url)
-    pagination = driver.find_elements_by_id("pagination")
+
+    time.sleep(2)
+    pagination = driver.find_elements(By.ID, 'pagination')
+  
     if len(pagination):
-        pagenumber = len(pagination[0].find_elements_by_tag_name("a")) - 3
+        pagenumber = len(pagination[0].find_elements(By.TAG_NAME, 'a')) + 1
     else:
         pagenumber = 1
+
     print("whole page count", pagenumber)
     breakflag = 0
     if startPage ==  None:
           startPage = 1
-    for page in range(startPage, pagenumber+1):
-        search_url = page_url + "#/page/" + str(page)
-        #print(search_url)
-    
+    for page in range(startPage, 2):
+        search_url = page_url + '#/page/' + str(page) + '/'
+        print(search_url)
+        
         print(f"----------------{league} - {season} {page}page start--------------------------------")
-      
+        
         driver.get(search_url)    
-        time.sleep(1.5)
-        tbody = driver.find_element_by_tag_name('tbody')                # get tobody of all matches
-        #print(tbody.text)
+        driver.refresh()
+
+        WebDriverWait(driver, 15).until(
+            EC.presence_of_element_located((By.TAG_NAME, 'main'))
+        )
+        main = driver.find_element(By.TAG_NAME, 'main')                # get main components
+
         index = 0
         match_date = ""
-        all_tr_array = tbody.find_elements_by_tag_name("tr")
+        
+        div_element = main.find_element(By.CLASS_NAME, 'w-full')
+        all_elements = div_element.find_elements(By.CSS_SELECTOR, '.flex.flex-col.w-full.text-xs')
+        for element in all_elements:
+            if(index % 2 == 0):    
+                all_leading = element.find_elements(By.CSS_SELECTOR, '.leading-5')
+                if(len(all_leading) > 1):
+                    # have date filed
+                    date_txt = all_leading[0].text
+                    match_date = getDate_from_trTxt(date_txt)
 
-        for each_tr in all_tr_array:
-            classField = each_tr.get_attribute('class')
-            if 'nob-border' in classField:                                # it means date tr
-                date_th = each_tr.find_elements_by_tag_name('th')[0]
-                date_txt = date_th.text
-                match_date =  getDate_from_trTxt(date_txt)
-            
-
-            if "deactivate" in classField:                                # means match tr
-                print(f"    --- {league} {season} {page} page {index}th match start---")
-                team_text = each_tr.find_elements_by_tag_name("a")[0].text
-                score_field = each_tr.find_elements_by_tag_name('td')[2].text
-                # if (" - " in team_text) & ( ':' in score_field ):
-                if (" - " in team_text):
-                    print(f"        {match_date} , {team_text} ")
-                    hrefUrl = each_tr.find_elements_by_tag_name("a")[0].get_attribute('href')
-                    
-                    status = insert_odds(hrefUrl, match_date, team_text, current_season)              # get every match information
+                group_element = element.find_element(By.CSS_SELECTOR, '.group')
+                if(group_element):
+                    # match field
+                    print(f"    --- {league} {season} {page} page { str(int(index/2))} th match start---")
+                    main_text_element = group_element.find_element(By.CSS_SELECTOR, '.relative.w-full')
+                    home_team = main_text_element.find_elements_by_tag_name("a")[0].get_attribute('title')
+                    away_team = main_text_element.find_elements_by_tag_name("a")[1].get_attribute('title')
+                    print(f"        {match_date} , {home_team} - {away_team} ")
+                    hrefUrl = main_text_element.find_elements_by_tag_name("a")[1].get_attribute('href')
+                    status = insert_odds(hrefUrl, match_date, home_team, away_team )
                     if current_season & (status == "No update"):
                             print("     * No need to update , this is already inserted!")
                             breakflag = 1
                             if breakFlag:
                                 break
-                    
-                    index += 1
-                else:
-                    print("        * not correct Ended match")
+            index  += 1
         if breakflag:
             breakflag = 0
             break
