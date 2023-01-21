@@ -235,20 +235,23 @@ def get_odds(turl, OU_url , AH_url):
         print("    Couldn't find Over 2.5 values !")
         highest_list = ['0', '0']
     else:
-        for element in element_OU:
-            OU_name = element.find_element(By.TAG_NAME, 'p')
-            OU_name =  OU_name.text.strip()
-            if OU_name == "Over/Under +2.5":
-                av_values = element.find_elements_by_class_name("colaps-btn")
-                if len(av_values) > 1:
-                    for i in  range(0, 2):
-                        if av_values[i].text == "-" or av_values[i].text == "":
-                            highest_list.append("0")
-                        else:
-                            highest_list.append(av_values[i].text)
-                else:
-                    highest_list = ['0', '0']
-                break
+        try:
+            for element in element_OU:
+                OU_name = element.find_element(By.TAG_NAME, 'p')
+                OU_name =  OU_name.text.strip()
+                if OU_name == "Over/Under +2.5":
+                    av_values = element.find_elements_by_class_name("colaps-btn")
+                    if len(av_values) > 1:
+                        for i in  range(0, 2):
+                            if av_values[i].text == "-" or av_values[i].text == "":
+                                highest_list.append("0")
+                            else:
+                                highest_list.append(av_values[i].text)
+                    else:
+                        highest_list = ['0', '0']
+                    break
+        except Exception as ex:
+            highest_list = ['0' , '0']
       
     O_U = {"highest": highest_list}
     # print("   OU ", O_U)
@@ -271,21 +274,24 @@ def get_odds(turl, OU_url , AH_url):
         highest_list = ['0', '0']
     else:
         ah_values_object = {}
-        for index in range(0, len(AH_elements)):
-            highest_list = []
-            element = AH_elements[index]
-            ah_name = element.find_element(By.TAG_NAME, 'p')
-            ah_name =  ah_name.text.strip()
-            av_values = element.find_elements_by_class_name("colaps-btn")
-            if len(av_values) > 1:
-                for i in  range(0, 2):
-                    if av_values[i].text == '' or  av_values[i].text == '-':
-                        highest_list.append('0')
-                    else:
-                        highest_list.append(av_values[i].text)
-            else:
-                highest_list = ['0', '0']
-            ah_values_object[ah_name] = {'highest': highest_list}
+        try:
+            for index in range(0, len(AH_elements)):
+                highest_list = []
+                element = AH_elements[index]
+                ah_name = element.find_element(By.TAG_NAME, 'p')
+                ah_name =  ah_name.text.strip()
+                av_values = element.find_elements_by_class_name("colaps-btn")
+                if len(av_values) > 1:
+                    for i in  range(0, 2):
+                        if av_values[i].text == '' or  av_values[i].text == '-':
+                            highest_list.append('0')
+                        else:
+                            highest_list.append(av_values[i].text)
+                else:
+                    highest_list = ['0', '0']
+                ah_values_object[ah_name] = {'highest': highest_list}
+        except:
+            print("    found unkown error in founding AH handicap")
         
         if('Asian Handicap -2' in ah_values_object) :
             AH_odds["AH_2"] = ah_values_object['Asian Handicap -2']
