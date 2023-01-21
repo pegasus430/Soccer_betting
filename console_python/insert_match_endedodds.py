@@ -413,13 +413,13 @@ def insert_price_to_matchplan(league, season, breakFlag = True, startPage = None
     else:
         pagenumber = 1
 
-    print("whole page count", pagenumber)
+    # print("whole page count", pagenumber)
     breakflag = 0
     if startPage ==  None:
           startPage = 1
     for page in range(startPage, 2):
         search_url = page_url + '#/page/' + str(page) + '/'
-        print(search_url)
+        # print(search_url)
         
         print(f"----------------{league} - {season} {page}page start--------------------------------")
         
