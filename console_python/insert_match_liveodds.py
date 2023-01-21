@@ -192,16 +192,24 @@ def get_odds(turl, OU_url , AH_url):
     main = driver1.find_element(By.TAG_NAME, 'main')
     time.sleep(0.5)
     high_elemnet = main.find_elements(By.TAG_NAME, '.bg-gray-light')
-    high_elemnet = high_elemnet[2]
+    if len(high_elemnet) > 2:
+        high_ = high_elemnet[2]
 
-    if high_elemnet:
-        av_values = high_elemnet.find_elements(By.TAG_NAME, ".justify-center.font-bold")
-        if len(av_values) > 2:
-          for i in range(0, 3):
-            if av_values[i].text == "-":
-              highest_list.append("0")
-            else: 
-              highest_list.append(av_values[i].text)
+        if high_:
+            av_values = high_.find_elements(By.TAG_NAME, ".justify-center.font-bold")
+            if len(av_values) > 2:
+                for i in range(0, 3):
+                    if av_values[i].text == "-" or av_values[i].text == "":
+                        highest_list.append("0")
+                    else: 
+                        highest_list.append(av_values[i].text)
+            else:
+                highest_list = ['0', '0', '0']
+        else:
+            highest_list = ['0', '0', '0']
+    else:
+         highest_list = ['0', '0', '0']
+            
 
     three_way = {"highest": highest_list}
     # print("   three_way ", three_way)
@@ -234,7 +242,7 @@ def get_odds(turl, OU_url , AH_url):
                 av_values = element.find_elements_by_class_name("colaps-btn")
                 if len(av_values) > 1:
                     for i in  range(0, 2):
-                        if av_values[i].text == "-":
+                        if av_values[i].text == "-" or av_values[i].text == "":
                             highest_list.append("0")
                         else:
                             highest_list.append(av_values[i].text)
@@ -248,8 +256,8 @@ def get_odds(turl, OU_url , AH_url):
     ############### Asian Handicap result ############################################################
    
     print("        * start scraping Asian Handicap data --------------------")
-    AH_odds = {"AH_2":{}, "AH_1.75":{}, "AH_1.5":{}, "AH_1.25":{}, "AH_1":{}, "AH_0.75":{}, "AH_0.5":{}, "AH_0.25":{}, "AH_0":{} , 
-    "AH_p2":{}, "AH_p1.75":{}, "AH_p1.5":{}, "AH_p1.25":{}, "AH_p1":{}, "AH_p0.75":{}, "AH_p0.5":{}, "AH_p0.25":{}}
+    AH_odds = {"AH_2":{'highest': ['0', '0']}, "AH_1.75":{'highest': ['0', '0']}, "AH_1.5":{'highest': ['0', '0']}, "AH_1.25":{'highest': ['0', '0']}, "AH_1":{'highest': ['0', '0']}, "AH_0.75":{'highest': ['0', '0']}, "AH_0.5":{'highest': ['0', '0']}, "AH_0.25":{'highest': ['0', '0']}, "AH_0":{'highest': ['0', '0']} , 
+    "AH_p2":{'highest': ['0', '0']}, "AH_p1.75":{'highest': ['0', '0']}, "AH_p1.5":{'highest': ['0', '0']}, "AH_p1.25":{'highest': ['0', '0']}, "AH_p1":{'highest': ['0', '0']}, "AH_p0.75":{'highest': ['0', '0']}, "AH_p0.5":{'highest': ['0', '0']}, "AH_p0.25":{'highest': ['0', '0']}}
     driver1.get(AH_url)
     driver1.refresh()
     time.sleep(0.5)
@@ -426,7 +434,7 @@ def insert_Price_To_Matchplan(league, season):
     print(f"---------------- {league} -  End--------------------------------")
     driver.quit()
 
-# insert_Price_To_Matchplan("england/premier-league",   "2022-2023")
+insert_Price_To_Matchplan("england/premier-league",   "2022-2023")
 insert_Price_To_Matchplan("spain/laliga",             "2022-2023")
 insert_Price_To_Matchplan("germany/bundesliga",       "2022-2023")
 insert_Price_To_Matchplan("italy/serie-a",            "2022-2023")
