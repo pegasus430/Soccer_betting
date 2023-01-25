@@ -246,7 +246,7 @@ def get_odds(turl, OU_url , AH_url):
                 av_values = element.find_elements_by_class_name("colaps-btn")
                 if len(av_values) > 1:
                     for i in  range(0, 2):
-                        if av_values[i].text == "-":
+                        if av_values[i].text == "-" or av_values[i].text == "":
                             highest_list.append("0")
                         else:
                             highest_list.append(av_values[i].text)
@@ -283,7 +283,7 @@ def get_odds(turl, OU_url , AH_url):
             av_values = element.find_elements_by_class_name("colaps-btn")
             if len(av_values) > 1:
                 for i in  range(0, 2):
-                    if av_values[i].text == '':
+                    if av_values[i].text == '-' or av_values[i].text == '':
                         highest_list.append('0')
                     else:
                         highest_list.append(av_values[i].text)
