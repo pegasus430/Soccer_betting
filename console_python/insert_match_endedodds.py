@@ -62,13 +62,10 @@ def switch_month(argument):
 
 def switch_season(argument):
     switcher = {
-        "2020" : 64,
-        "2021" : 844,
-        "2019-2020": 12,
-        "2020-2021": 799,
-        "2021-2022" : 857,
         "2022" : 916,
-        "2022-2023" : 935
+        "2023" : 1013,
+        "2022-2023" : 935,
+        "2023-2024" : 1027,
     }
     return switcher.get(argument, "null")
 
@@ -474,17 +471,17 @@ insert_price_to_matchplan("france/ligue-1",           "")
 insert_price_to_matchplan("netherlands/eredivisie",   "")
 insert_price_to_matchplan("austria/tipico-bundesliga","")
 insert_price_to_matchplan("portugal/primeira-liga",   "")
-insert_price_to_matchplan("greece/super-league",      "")
-insert_price_to_matchplan("turkey/super-lig",         "")
+# insert_price_to_matchplan("greece/super-league",      "")
+# insert_price_to_matchplan("turkey/super-lig",         "")
 insert_price_to_matchplan("norway/eliteserien",       "")
 insert_price_to_matchplan("sweden/allsvenskan",       "")
 insert_price_to_matchplan("switzerland/super-league", "")
 insert_price_to_matchplan("denmark/superliga",        "")
-# insert_price_to_matchplan("ukraine/premier-league",   "")
+insert_price_to_matchplan("ukraine/premier-league",   "")
 insert_price_to_matchplan("bulgaria/parva-liga",      "")
 insert_price_to_matchplan("czech-republic/1-liga",    "")
 insert_price_to_matchplan("croatia/1-hnl",            "")
 insert_price_to_matchplan("hungary/otp-bank-liga",    "")
-insert_price_to_matchplan("serbia/super-liga",        "")
+# insert_price_to_matchplan("serbia/super-liga",        "")
 
 print(" Total added count is : ", total_added_count)

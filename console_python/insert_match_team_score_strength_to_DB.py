@@ -24,6 +24,7 @@ def switch_season(argument):
 		"2020-2021": 799,
 		"2021-2022": 857,
         "2022-2023": 935,	
+        "2023-2024": 1027,
 		"2010": 20,
 		"2011": 18,
 		"2012": 16,
@@ -36,7 +37,8 @@ def switch_season(argument):
 		"2019": 11,
 		"2020": 64,
 		"2021": 844,
-  		"2022": 916
+  		"2022": 916,
+    	"2023": 1013
 	}
 	return switcher.get(argument, "null")
 
@@ -84,7 +86,7 @@ updated_count = 0
 def insert_match_team_socre_strength_TPGR():
 	global updated_count
 	
-	sql = f"SELECT * FROM season_match_plan WHERE match_id > 88570"
+	sql = f"SELECT * FROM season_match_plan WHERE match_id > 93820"
 	
 	mycursor.execute(sql)
 	wholeMatchResult = mycursor.fetchall()

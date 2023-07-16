@@ -23,13 +23,10 @@ mycursor = mydb.cursor(buffered=True)
 
 def switch_season(argument):
     switcher = {
-        "2019-2020": 12,
-        "2020": 64,
-        "2020-2021" : 799,
-        "2021"    : 844,
-        "2021-2022": 857,
         "2022" : 916,
-        "2022-2023" : 935
+        "2022-2023" : 935,
+        "2023": 1013,
+        "2023-2024": 1027
     }
     return switcher.get(argument, "null")
 
@@ -868,26 +865,26 @@ def fn_Get_TeamId(team_name):
 #################################################################################################
 
 def main():
-	doing_scraping_match_plan("2022-2023", "aut-bundesliga")
-	doing_scraping_match_plan("2022-2023", "bul-parva-liga")
-	doing_scraping_match_plan("2022-2023", "cze-1-fotbalova-liga")
-	doing_scraping_match_plan("2022-2023", "den-superligaen")
-	doing_scraping_match_plan("2022-2023", "eng-premier-league")
-	doing_scraping_match_plan("2022-2023", "fra-ligue-1")
-	doing_scraping_match_plan("2022-2023", "bundesliga")
-	doing_scraping_match_plan("2022-2023", "gre-super-league")
-	doing_scraping_match_plan("2022-2023", "ita-serie-a")
-	doing_scraping_match_plan("2022-2023", "ned-eredivisie")
-	doing_scraping_match_plan("2022-2023", "por-primeira-liga")
-	doing_scraping_match_plan("2022-2023", "srb-super-liga")
-	doing_scraping_match_plan("2022-2023", "esp-primera-division")
-	doing_scraping_match_plan("2022-2023", "sui-super-league")
-	doing_scraping_match_plan("2022-2023", "tur-sueperlig")
-	# doing_scraping_match_plan("2022-2023", "ukr-premyer-liga")
-	doing_scraping_match_plan("2022", "swe-allsvenskan")
-	doing_scraping_match_plan("2022", "nor-eliteserien")
-	doing_scraping_match_plan("2022-2023", "cro-1-hnl")
-	doing_scraping_match_plan("2022-2023", "hun-nb-i")
+	doing_scraping_match_plan("2023-2024", "aut-bundesliga")
+	doing_scraping_match_plan("2023-2024", "bul-parva-liga")
+	doing_scraping_match_plan("2023-2024", "cze-1-fotbalova-liga")
+	doing_scraping_match_plan("2023-2024", "den-superligaen")
+	doing_scraping_match_plan("2023-2024", "eng-premier-league")
+	doing_scraping_match_plan("2023-2024", "fra-ligue-1")
+	doing_scraping_match_plan("2023-2024", "bundesliga")
+	# doing_scraping_match_plan("2023-2024", "gre-super-league", firstMatch = None, lastMatch = None, newInsertFlag = True)
+	doing_scraping_match_plan("2023-2024", "ita-serie-a")
+	doing_scraping_match_plan("2023-2024", "ned-eredivisie")
+	doing_scraping_match_plan("2023-2024", "por-primeira-liga")
+	# doing_scraping_match_plan("2023-2024", "srb-super-liga", firstMatch = None, lastMatch = None, newInsertFlag = True)
+	doing_scraping_match_plan("2023-2024", "esp-primera-division")
+	doing_scraping_match_plan("2023-2024", "sui-super-league")
+	# doing_scraping_match_plan("2023-2024", "tur-sueperlig", firstMatch = None, lastMatch = None, newInsertFlag = True)
+	doing_scraping_match_plan("2023-2024", "ukr-premyer-liga")
+	doing_scraping_match_plan("2023", "swe-allsvenskan")
+	doing_scraping_match_plan("2023", "nor-eliteserien")
+	doing_scraping_match_plan("2023-2024", "cro-1-hnl")
+	doing_scraping_match_plan("2023-2024", "hun-nb-i")
  
 	# doing_scraping_match_plan("", "", firstMatch = None, lastMatch = None, newInsertFlag = True)
 	

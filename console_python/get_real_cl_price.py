@@ -32,6 +32,8 @@ def switch_season(argument):
 		"2019-2020": 12,
 		"2020-2021": 799,
 		"2021-2022": 857,	
+  		"2022-2023": 935,	
+    	"2023-2024": 1027,	
 		"2010": 20,
 		"2011": 18,
 		"2012": 16,
@@ -43,7 +45,9 @@ def switch_season(argument):
 		"2018": 10,
 		"2019": 11,
 		"2020": 64,
-		"2021": 844
+		"2021": 844,
+  		"2022": 916,
+        "2023": 1013,
 	}
     return switcher.get(argument, "null")
 
@@ -89,7 +93,7 @@ def insert_DSLReferColumn():
 		DSL_refer_id= mycursor.fetchone();
 		
 		if id:
-			print(f"match id  - {result[0]} ");
+			# print(f"match id  - {result[0]} ");
 			sub_sql = f'update season_match_plan set DSL_refer_id = {DSL_refer_id[0]} where match_id = {result[0]}';
 			mycursor.execute(sub_sql);
 			mydb.commit();
@@ -158,7 +162,7 @@ def insert_pricetable():
 			
 			mycursor.execute(sub_sql);
 			mydb.commit();
-			print(f'inserted id  - {id}')
+			# print(f'inserted id  - {id}')
 
 def get_Team_Cream_text(team_id , season_id):
 	
@@ -201,7 +205,7 @@ def get_CreamLeague_MO_source_list(c_weeknumber):
 		# print(elem_list)
 		source_list.append(elem_list)
 
-	print("-----length of source list is ", len(source_list))
+	# print("-----length of source list is ", len(source_list))
 	return source_list
 
 # AH Cream League combination list of matches
@@ -407,11 +411,11 @@ def get_CreamLeague_AH_source_list(c_weeknumber):
         # print("    +2 market: ", elem_list)
         result_list['+2'].append(elem_list)
 
-        print(" ")
+        # print(" ")
         
         
 
-    print("-----length of source list is ", len(result_list['-2']))
+    # print("-----length of source list is ", len(result_list['-2']))
     return result_list
 
 # MO real price data (refer, H D, A) into real price table
@@ -424,9 +428,9 @@ def insert_real_prcie_to_MO_realpriceTable( C_weeknumber):
 	merged = defaultdict(lambda: [0, 0, 0])
 	for refer_text, *values in source_list:               
 		merged[refer_text] = [sum(i) for i in zip(values, merged[refer_text])]
-	print("-----length of grouped list is ", len(merged))
-	print("MO merged list ")
-	print(merged.items())
+	# print("-----length of grouped list is ", len(merged))
+	# print("MO merged list ")
+	# print(merged.items())
 
 	# get real price list of week 647
 	sql = f"SELECT refer,  H, D, A FROM real_mo_price_cl where c_week_number = 647"
@@ -470,7 +474,7 @@ def insert_real_prcie_to_MO_realpriceTable( C_weeknumber):
 		count += 1
 		# print(f"       -week {C_weeknumber} insert item - {elem[0]}, H: {elem[1]}, D: {elem[2]}, A: {elem[3]}, Total: {total}")
 
-	print(f" -week {C_weeknumber} inserted count is {count}")
+	# print(f" -week {C_weeknumber} inserted count is {count}")
 	
 # AH real price data into real_ah_price table
 def insert_real_prcie_to_AH_realpriceTable(weeknumber):
@@ -481,7 +485,7 @@ def insert_real_prcie_to_AH_realpriceTable(weeknumber):
 		merged = defaultdict(lambda: [0, 0, 0,  0, 0])
 		for refer_text, *values in each_AH_source_list:               
 			merged[refer_text] = [sum(i) for i in zip(values, merged[refer_text])]
-		print("-----length of grouped list is ", len(merged))
+		# print("-----length of grouped list is ", len(merged))
 		# print("AH merged list ")
 		# print(market, merged)
 
@@ -534,7 +538,7 @@ def insert_real_prcie_to_AH_realpriceTable(weeknumber):
 			count += 1
 			# print(f"       -week {weeknumber} AH {market} insert item - {refer}, win: {elem[1]}, lose: {elem[2]}, flat: {elem[3]}, half_win: {elem[4]}, half_lose: {elem[5]}, total: {total}")
         
-		print(f" -week {weeknumber}- market {market} inserted count is {count}")
+		# print(f" -week {weeknumber}- market {market} inserted count is {count}")
 
 #update real_price_cl id of each match in season_match_plan
 def update_real_mo_price_id_toSeasonMatchPlanTable(week_number):
@@ -615,10 +619,11 @@ def matching_realpriceid_toSeasonMatchPlanColumn(weeknumber):
 	# update_real_AH_price_id_toSeasonMatchPlanTable(weeknumber)
     
 def main():
-    # for C_weeknumber in range(630, 633):
-    # get_realprice_toRealPriceTable_perweek(655)
+    # for C_weeknumber in range(691, 699):
+    # 	get_realprice_toRealPriceTable_perweek(C_weeknumber)
    
-    matching_realpriceid_toSeasonMatchPlanColumn(693)
+    get_realprice_toRealPriceTable_perweek(704)
+    matching_realpriceid_toSeasonMatchPlanColumn(704)
     
 	
 if __name__ == "__main__":

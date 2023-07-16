@@ -68,7 +68,9 @@ def switch_season(argument):
         "2020-2021": 799,
         "2021-2022": 857,
         "2022" : 916,
-        "2022-2023" : 935
+        "2022-2023" : 935,
+        "2023" : 1013,
+        "2023-2024" : 1027
     }
     return switcher.get(argument, "null")
   
@@ -440,26 +442,26 @@ def insert_Price_To_Matchplan(league, season):
     print(f"---------------- {league} -  End--------------------------------")
     driver.quit()
 
-insert_Price_To_Matchplan("england/premier-league",   "2022-2023")
-insert_Price_To_Matchplan("spain/laliga",             "2022-2023")
-insert_Price_To_Matchplan("germany/bundesliga",       "2022-2023")
-insert_Price_To_Matchplan("italy/serie-a",            "2022-2023")
-insert_Price_To_Matchplan("france/ligue-1",           "2022-2023")
-insert_Price_To_Matchplan("netherlands/eredivisie",   "2022-2023")
-insert_Price_To_Matchplan("austria/tipico-bundesliga","2022-2023")
-insert_Price_To_Matchplan("portugal/primeira-liga",   "2022-2023")
-insert_Price_To_Matchplan("greece/super-league",      "2022-2023")
-insert_Price_To_Matchplan("turkey/super-lig",         "2022-2023")
-insert_Price_To_Matchplan("norway/eliteserien",       "2022")
-insert_Price_To_Matchplan("sweden/allsvenskan",       "2022")
-insert_Price_To_Matchplan("switzerland/super-league", "2022-2023")
-insert_Price_To_Matchplan("denmark/superliga",        "2022-2023")
-# insert_Price_To_Matchplan("ukraine/premier-league",   "2022-2023")
-insert_Price_To_Matchplan("bulgaria/parva-liga",      "2022-2023")
-insert_Price_To_Matchplan("czech-republic/1-liga",    "2022-2023")
-insert_Price_To_Matchplan("croatia/1-hnl",            "2022-2023")
-insert_Price_To_Matchplan("hungary/otp-bank-liga",    "2022-2023")
-insert_Price_To_Matchplan("serbia/super-liga",        "2022-2023")
+insert_Price_To_Matchplan("england/premier-league",   "2023-2024")
+insert_Price_To_Matchplan("spain/laliga",             "2023-2024")
+insert_Price_To_Matchplan("germany/bundesliga",       "2023-2024")
+insert_Price_To_Matchplan("italy/serie-a",            "2023-2024")
+insert_Price_To_Matchplan("france/ligue-1",           "2023-2024")
+insert_Price_To_Matchplan("netherlands/eredivisie",   "2023-2024")
+insert_Price_To_Matchplan("austria/tipico-bundesliga","2023-2024")
+insert_Price_To_Matchplan("portugal/primeira-liga",   "2023-2024")
+# insert_Price_To_Matchplan("greece/super-league",      "2023-2024")
+# insert_Price_To_Matchplan("turkey/super-lig",         "2023-2024")
+insert_Price_To_Matchplan("norway/eliteserien",       "2023")
+insert_Price_To_Matchplan("sweden/allsvenskan",       "2023")
+insert_Price_To_Matchplan("switzerland/super-league", "2023-2024")
+insert_Price_To_Matchplan("denmark/superliga",        "2023-2024")
+insert_Price_To_Matchplan("ukraine/premier-league",   "2023-2024")
+insert_Price_To_Matchplan("bulgaria/parva-liga",      "2023-2024")
+insert_Price_To_Matchplan("czech-republic/1-liga",    "2023-2024")
+insert_Price_To_Matchplan("croatia/1-hnl",            "2023-2024")
+insert_Price_To_Matchplan("hungary/otp-bank-liga",    "2023-2024")
+# insert_Price_To_Matchplan("serbia/super-liga",        "2023-2024")
 
 print(" Total inserted count is : ", total_inserted_count)
 print(" Total updated count is : ", total_updated_count)

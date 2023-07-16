@@ -22,13 +22,10 @@ mycursor = mydb.cursor(buffered=True)
 
 def switch_season(argument):
     switcher = {
-        "2019-2020": 12,
-        "2020": 64,
-        "2020-2021" : 799,
-        "2021"    : 844,
-        "2021-2022": 857,
         "2022" : 916,
-        "2022-2023" : 935
+        "2022-2023" : 935,
+        "2023": 1013,
+        "2023-2024": 1027
     }
     return switcher.get(argument, "null")
     
@@ -132,26 +129,26 @@ def insert_teamList(season=None, league=None):
         mydb.commit()
         print("insert season_league_team end!")
 
-insert_teamList("2022-2023", "aut-bundesliga")
-insert_teamList("2022-2023", "bul-parva-liga")
-insert_teamList("2022-2023", "cze-1-fotbalova-liga")
-insert_teamList("2022-2023", "den-superligaen")
-insert_teamList("2022-2023", "eng-premier-league")
-insert_teamList("2022-2023", "fra-ligue-1")
-insert_teamList("2022-2023", "bundesliga")
-insert_teamList("2022-2023", "gre-super-league")
-insert_teamList("2022-2023", "ita-serie-a")
-insert_teamList("2022-2023", "ned-eredivisie")
-insert_teamList("2022-2023", "por-primeira-liga")
-insert_teamList("2022-2023", "srb-super-liga")
-insert_teamList("2022-2023", "esp-primera-division")
-insert_teamList("2022-2023", "sui-super-league")
-insert_teamList("2022-2023", "tur-sueperlig")
-# insert_teamList("2022-2023", "ukr-premyer-liga")
-insert_teamList("2022-2023", "cro-1-hnl")
-insert_teamList("2022-2023", "hun-nb-i")
-# insert_teamList("2022", "nor-eliteserien")
-# insert_teamList("2022", "swe-allsvenskan")
+insert_teamList("2023-2024", "aut-bundesliga")
+insert_teamList("2023-2024", "bul-parva-liga")
+insert_teamList("2023-2024", "cze-1-fotbalova-liga")
+insert_teamList("2023-2024", "den-superligaen")
+insert_teamList("2023-2024", "eng-premier-league")
+insert_teamList("2023-2024", "fra-ligue-1")
+insert_teamList("2023-2024", "bundesliga")
+# insert_teamList("2023-2024", "gre-super-league")
+insert_teamList("2023-2024", "ita-serie-a")
+insert_teamList("2023-2024", "ned-eredivisie")
+insert_teamList("2023-2024", "por-primeira-liga")
+# insert_teamList("2023-2024", "srb-super-liga")
+insert_teamList("2023-2024", "esp-primera-division")
+insert_teamList("2023-2024", "sui-super-league")
+# insert_teamList("2023-2024", "tur-sueperlig")
+insert_teamList("2023-2024", "ukr-premyer-liga")
+insert_teamList("2023-2024", "cro-1-hnl")
+insert_teamList("2023-2024", "hun-nb-i")
+insert_teamList("2023", "nor-eliteserien")
+insert_teamList("2023", "swe-allsvenskan")
 
 
 
