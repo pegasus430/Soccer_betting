@@ -29,7 +29,7 @@ def insert_team_point_to_DB():
   mycursor.execute(sql)
   myresult = mycursor.fetchall()
 
-  for i in range(4124, 4394):   # here the sequence...... index - 1  2022-2023 from 3853
+  for i in range(4124, 4428):   # here the sequence...... index - 1  2022-2023 from 3853
       season_id = myresult[i][0]
       league_id = myresult[i][1]
       team_id = myresult[i][2]
