@@ -41,7 +41,7 @@ chrome_options.add_argument('--blink-settings=imagesEnabled=false')
 chrome_options.binary_location = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
 
 
-site_url = "https://www.oddsportal.com/soccer/"
+site_url = "https://www.oddsportal.com/football/"
 
 def switch_month(argument):
     switcher = {
@@ -220,6 +220,7 @@ def get_odds(turl, OU_url , AH_url):
     # ############### Over / Under result ############################################################
 
     print("        * start scraping Over Under data --------------------")
+    
     driver1.get(OU_url)
     driver1.refresh()
     time.sleep(0.5)
@@ -240,11 +241,14 @@ def get_odds(turl, OU_url , AH_url):
         try:
             for element in element_OU:
                 OU_name = element.find_element(By.TAG_NAME, 'p')
+                
                 OU_name =  OU_name.text.strip()
                 if OU_name == "Over/Under +2.5":
-                    av_values = element.find_elements_by_class_name("colaps-btn")
+                    av_values = element.find_elements_by_class_name("gradient-green-added-border")
+                    
                     if len(av_values) > 1:
                         for i in  range(0, 2):
+                            
                             if av_values[i].text == "-" or av_values[i].text == "":
                                 highest_list.append("0")
                             else:
@@ -282,7 +286,7 @@ def get_odds(turl, OU_url , AH_url):
                 element = AH_elements[index]
                 ah_name = element.find_element(By.TAG_NAME, 'p')
                 ah_name =  ah_name.text.strip()
-                av_values = element.find_elements_by_class_name("colaps-btn")
+                av_values = element.find_elements_by_class_name("gradient-green-added-border")
                 if len(av_values) > 1:
                     for i in  range(0, 2):
                         if av_values[i].text == '' or  av_values[i].text == '-':
