@@ -110,12 +110,13 @@ def insert_update_odds(basic_match_href_url, match_date, home_team, away_team):
     home_team_name = home_team
     away_team_name = away_team
     sql = f"SELECT team_id from team_list where team_name_odd = '{home_team_name}'"
-    #print(sql)
+    # print(sql)
     mycursor.execute(sql)
     result = mycursor.fetchall()
     if result:
         home_team_id = result[0][0]
         sql = f"SELECT match_id from season_match_plan where date = '{match_date}' and home_team_id = {home_team_id}"
+        # print(sql)
         mycursor.execute(sql)
         result  =  mycursor.fetchall()
         if result:

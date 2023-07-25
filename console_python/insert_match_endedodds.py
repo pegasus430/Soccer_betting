@@ -240,7 +240,7 @@ def get_odds(turl, OU_url , AH_url):
             OU_name = element.find_element(By.TAG_NAME, 'p')
             OU_name =  OU_name.text.strip()
             if OU_name == "Over/Under +2.5":
-                av_values = element.find_elements_by_class_name("gradigradient-green-added-border")
+                av_values = element.find_elements_by_class_name("gradient-green-added-border")
                 if len(av_values) > 1:
                     for i in  range(0, 2):
                         if av_values[i].text == "-" or av_values[i].text == "":
@@ -277,7 +277,7 @@ def get_odds(turl, OU_url , AH_url):
             element = AH_elements[index]
             ah_name = element.find_element(By.TAG_NAME, 'p')
             ah_name =  ah_name.text.strip()
-            av_values = element.find_elements_by_class_name("gradigradient-green-added-border")
+            av_values = element.find_elements_by_class_name("gradient-green-added-border")
             if len(av_values) > 1:
                 for i in  range(0, 2):
                     if av_values[i].text == '-' or av_values[i].text == '':
