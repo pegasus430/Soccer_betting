@@ -257,6 +257,9 @@ def get_odds(turl, OU_url , AH_url):
                     else:
                         highest_list = ['0', '0']
                     break
+            if len(highest_list) == 0:
+                highest_list = ['0', '0']
+                    
         except Exception as ex:
             highest_list = ['0' , '0']
       
