@@ -104,7 +104,7 @@ def doing_scraping_match_plan(season=None , league=None, firstMatch = None, last
 			match_status = all_td[6]
 			sql = f'SELECT team_id FROM team_list WHERE team_name = "{all_td[2].text}" UNION ' \
 				f'SELECT team_id FROM team_list WHERE team_name = "{all_td[4].text}"'
-			print(sql)
+			# print(sql)
 			mycursor.execute(sql)
 			myresult = mycursor.fetchall()
 			home_team_id = myresult[0][0]
@@ -212,7 +212,7 @@ def doing_scraping_match_plan(season=None , league=None, firstMatch = None, last
 									insert_match_team_player_info(url , current_match_id, home_team_id, away_team_id)
 							else:
 								sql = f"UPDATE season_match_plan set date = '{match_date}' , time = '{start_time}', status = '{status}' where match_id = {current_match_id}"
-								print(sql)
+								# print(sql)
 								mycursor.execute(sql)
 								mydb.commit()
 								sql = f"UPDATE season_match_plan AS a SET WN = WEEK(a.date - INTERVAL 1 DAY)+1 ,c_WN = (SELECT WEEK  FROM date_week_map AS b WHERE a.date = b.date ) where match_id = {current_match_id}"
@@ -488,7 +488,7 @@ def insert_match_team_player_info(url , last_match_id, home_team_id, away_team_i
 			val = (last_match_id, home_team_id, id, goals, assists)
 			mycursor.execute(sql, val)
 			mydb.commit()
-			print(" inserted home team player - ",i+1 ,a_results[i]['title'] , id, goals, assists)
+			# print(" inserted home team player - ",i+1 ,a_results[i]['title'] , id, goals, assists)
 		################################ End insert home team info ##########################################
 		a_results = away_team_container.find_all("a")
 		for i in range(0,11):
@@ -503,7 +503,7 @@ def insert_match_team_player_info(url , last_match_id, home_team_id, away_team_i
 			val = (last_match_id, away_team_id, id, goals, assists)
 			mycursor.execute(sql, val)
 			mydb.commit()
-			print(" inserted away team player - ", i+1 , a_results[i]['title'] , id, goals, assists)
+			# print(" inserted away team player - ", i+1 , a_results[i]['title'] , id, goals, assists)
 
 		added_matches_count += 1
 		################################ End insert away team info ##########################################
@@ -722,7 +722,7 @@ def update_insert_PlayerCareer(player_id, player_href):
 								where player_id = {player_id} and league_id = {league_id} and season_id = {season_id} and team_id = {team_id}"
 						mycursor.execute(sql)
 						mydb.commit()
-						print(f"   Updated new row-{count}")
+						# print(f"   Updated new row-{count}")
 						count = count + 1
 					else:						# if the data not existing in DB, will inset this
 						sql = f"INSERT INTO player_career (player_id, flag, league_id, season_id, team_id, matches, goals, started,s_in, s_out, yellow, s_yellow, red ) \
@@ -738,7 +738,7 @@ def update_insert_PlayerCareer(player_id, player_href):
 					
 						mycursor.execute(sql)
 						mydb.commit()
-						print(f"   added extra new row-{count}")
+						# print(f"   added extra new row-{count}")
 						count = count + 1
 			tr_index = tr_index +1
 
@@ -773,7 +773,7 @@ def update_insert_PlayerCareer(player_id, player_href):
 					
 					mycursor.execute(sql)
 					mydb.commit()
-					print(f"   added extra new row-{count}")
+					# print(f"   added extra new row-{count}")
 					count = count + 1
 			tr_index = tr_index +1
 						
