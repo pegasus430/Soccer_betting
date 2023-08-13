@@ -680,105 +680,107 @@ def update_insert_PlayerCareer(player_id, player_href):
 	myresult = mycursor.fetchall()
 	href_info = player_href
 	url = "https://www.worldfootball.net" + href_info + "/2/"
-	
-	page = requests.get(url , headers={"User-Agent":"Mozilla/5.0"})
-	
-	soup = BeautifulSoup(page.content, "html.parser")
-		################################### page url check end ###############################
-	if len(myresult):           # player data is already existed in career table , so have to update or insert
-		print(f"{player_id}th data is already added! so will update ")
-		extra_results = soup.find('table', class_="standard_tabelle")
-		extra_tr_results = extra_results.find_all("tr")
-		count = 1
-		tr_index = 1
-		for tr in extra_tr_results:
-			all_td = tr.find_all("td")
-			
-			if(len(all_td)) :
-				if (tr_index > 1) and len(all_td) < 2: # no carrer
-					break
-				else: 
-					flag = all_td[0].find('img')['src']
-					league_id = fn_Get_LeagueId(all_td[1].text, all_td[1].find('a')['href'])
-					season_id = fn_Get_SeasonId(all_td[2].text)
-					
-					if "2018" in all_td[2].text:          # 2018 lower season no updated and will break 
-						print("    now season is lower than 2018 , so break")
+	try:
+		page = requests.get(url , headers={"User-Agent":"Mozilla/5.0"})
+		
+		soup = BeautifulSoup(page.content, "html.parser")
+			################################### page url check end ###############################
+		if len(myresult):           # player data is already existed in career table , so have to update or insert
+			print(f"{player_id}th data is already added! so will update ")
+			extra_results = soup.find('table', class_="standard_tabelle")
+			extra_tr_results = extra_results.find_all("tr")
+			count = 1
+			tr_index = 1
+			for tr in extra_tr_results:
+				all_td = tr.find_all("td")
+				
+				if(len(all_td)) :
+					if (tr_index > 1) and len(all_td) < 2: # no carrer
 						break
-					
-					team_id = fn_Get_TeamId(all_td[3].text)
-					sql = f'SELECT * from player_career where player_id = {player_id} and league_id = {league_id} and season_id = {season_id} and team_id = {team_id}'
-					mycursor.execute(sql)
-					career_result = mycursor.fetchall()
-					if(len(career_result)):       # if the season and league is existing , will update them 
-						sql = f"update player_career set matches = { fn_filter_value(all_td[4].text)} , \
-								goals = { fn_filter_value(all_td[5].text)}, \
-								started = { fn_filter_value(all_td[6].text)}, \
-								s_in = { fn_filter_value(all_td[7].text)},  \
-								s_out = { fn_filter_value(all_td[8].text)}, \
-								yellow = { fn_filter_value(all_td[9].text)}, \
-								s_yellow = { fn_filter_value(all_td[10].text)}, \
-								red = { fn_filter_value(all_td[11].text)}  \
-								where player_id = {player_id} and league_id = {league_id} and season_id = {season_id} and team_id = {team_id}"
+					else: 
+						flag = all_td[0].find('img')['src']
+						league_id = fn_Get_LeagueId(all_td[1].text, all_td[1].find('a')['href'])
+						season_id = fn_Get_SeasonId(all_td[2].text)
+						
+						if "2018" in all_td[2].text:          # 2018 lower season no updated and will break 
+							print("    now season is lower than 2018 , so break")
+							break
+						
+						team_id = fn_Get_TeamId(all_td[3].text)
+						sql = f'SELECT * from player_career where player_id = {player_id} and league_id = {league_id} and season_id = {season_id} and team_id = {team_id}'
 						mycursor.execute(sql)
-						mydb.commit()
-						# print(f"   Updated new row-{count}")
-						count = count + 1
-					else:						# if the data not existing in DB, will inset this
+						career_result = mycursor.fetchall()
+						if(len(career_result)):       # if the season and league is existing , will update them 
+							sql = f"update player_career set matches = { fn_filter_value(all_td[4].text)} , \
+									goals = { fn_filter_value(all_td[5].text)}, \
+									started = { fn_filter_value(all_td[6].text)}, \
+									s_in = { fn_filter_value(all_td[7].text)},  \
+									s_out = { fn_filter_value(all_td[8].text)}, \
+									yellow = { fn_filter_value(all_td[9].text)}, \
+									s_yellow = { fn_filter_value(all_td[10].text)}, \
+									red = { fn_filter_value(all_td[11].text)}  \
+									where player_id = {player_id} and league_id = {league_id} and season_id = {season_id} and team_id = {team_id}"
+							mycursor.execute(sql)
+							mydb.commit()
+							# print(f"   Updated new row-{count}")
+							count = count + 1
+						else:						# if the data not existing in DB, will inset this
+							sql = f"INSERT INTO player_career (player_id, flag, league_id, season_id, team_id, matches, goals, started,s_in, s_out, yellow, s_yellow, red ) \
+								VALUES ({player_id},'{flag}', {league_id} ,{ season_id}, {team_id}, \
+									{  fn_filter_value(all_td[4].text)}, \
+									{ fn_filter_value(all_td[5].text)}, \
+									{ fn_filter_value(all_td[6].text)}, \
+									{ fn_filter_value(all_td[7].text)}, \
+									{ fn_filter_value(all_td[8].text)}, \
+									{ fn_filter_value(all_td[9].text)}, \
+									{ fn_filter_value(all_td[10].text)}, \
+									{ fn_filter_value(all_td[11].text)})"
+						
+							mycursor.execute(sql)
+							mydb.commit()
+							# print(f"   added extra new row-{count}")
+							count = count + 1
+				tr_index = tr_index +1
+
+		else:                       # NO player data  , so have to insert
+			################################### career check start ###############################
+			extra_results = soup.find('table', class_="standard_tabelle")
+			extra_tr_results = extra_results.find_all("tr")
+			count = 1
+			tr_index = 1
+			for tr in extra_tr_results:
+				all_td = tr.find_all("td")
+				http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
+				if(len(all_td)) :
+					if (tr_index > 1) and len(all_td) < 2: # no carrer
+						break
+					else: 
+						flag = all_td[0].find('img')['src']
+						league_id = fn_Get_LeagueId(all_td[1].text, all_td[1].find('a')['href'])
+						season_id = fn_Get_SeasonId(all_td[2].text)
+						team_id = fn_Get_TeamId(all_td[3].text)
+						
 						sql = f"INSERT INTO player_career (player_id, flag, league_id, season_id, team_id, matches, goals, started,s_in, s_out, yellow, s_yellow, red ) \
-							VALUES ({player_id},'{flag}', {league_id} ,{ season_id}, {team_id}, \
-								{  fn_filter_value(all_td[4].text)}, \
-								{ fn_filter_value(all_td[5].text)}, \
-								{ fn_filter_value(all_td[6].text)}, \
-								{ fn_filter_value(all_td[7].text)}, \
-								{ fn_filter_value(all_td[8].text)}, \
-								{ fn_filter_value(all_td[9].text)}, \
-								{ fn_filter_value(all_td[10].text)}, \
-								{ fn_filter_value(all_td[11].text)})"
-					
+								VALUES ({player_id},'{flag}', {league_id} ,{ season_id}, {team_id}, \
+							{  fn_filter_value(all_td[4].text)}, \
+							{ fn_filter_value(all_td[5].text)}, \
+							{ fn_filter_value(all_td[6].text)}, \
+							{ fn_filter_value(all_td[7].text)}, \
+							{ fn_filter_value(all_td[8].text)}, \
+							{ fn_filter_value(all_td[9].text)}, \
+							{ fn_filter_value(all_td[10].text)}, \
+							{ fn_filter_value(all_td[11].text)})"
+						
 						mycursor.execute(sql)
 						mydb.commit()
 						# print(f"   added extra new row-{count}")
 						count = count + 1
-			tr_index = tr_index +1
-
-	else:                       # NO player data  , so have to insert
-		################################### career check start ###############################
-		extra_results = soup.find('table', class_="standard_tabelle")
-		extra_tr_results = extra_results.find_all("tr")
-		count = 1
-		tr_index = 1
-		for tr in extra_tr_results:
-			all_td = tr.find_all("td")
-			http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
-			if(len(all_td)) :
-				if (tr_index > 1) and len(all_td) < 2: # no carrer
-					break
-				else: 
-					flag = all_td[0].find('img')['src']
-					league_id = fn_Get_LeagueId(all_td[1].text, all_td[1].find('a')['href'])
-					season_id = fn_Get_SeasonId(all_td[2].text)
-					team_id = fn_Get_TeamId(all_td[3].text)
-					
-					sql = f"INSERT INTO player_career (player_id, flag, league_id, season_id, team_id, matches, goals, started,s_in, s_out, yellow, s_yellow, red ) \
-							VALUES ({player_id},'{flag}', {league_id} ,{ season_id}, {team_id}, \
-						{  fn_filter_value(all_td[4].text)}, \
-						{ fn_filter_value(all_td[5].text)}, \
-						{ fn_filter_value(all_td[6].text)}, \
-						{ fn_filter_value(all_td[7].text)}, \
-						{ fn_filter_value(all_td[8].text)}, \
-						{ fn_filter_value(all_td[9].text)}, \
-						{ fn_filter_value(all_td[10].text)}, \
-						{ fn_filter_value(all_td[11].text)})"
-					
-					mycursor.execute(sql)
-					mydb.commit()
-					# print(f"   added extra new row-{count}")
-					count = count + 1
-			tr_index = tr_index +1
+				tr_index = tr_index +1
 						
-	print("    Player's career updated as new data!")
-
+		print("    Player's career updated as new data!")
+	
+	except Exception as e:
+		print("    Exception raised while updating the payer carreer ")
 def fn_filter_value(str):
 	if '?' in str:
 		return 0
