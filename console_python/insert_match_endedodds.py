@@ -269,7 +269,24 @@ def get_odds(turl, OU_url , AH_url):
 
     if len(AH_elements) == 0:
         print("    Couldn't find AH values !")
-        highest_list = ['0', '0']
+        AH_odds["AH_2"] = { "highest": ['0', '0']}
+        AH_odds["AH_1.75"] = { "highest": ['0', '0']}
+        AH_odds["AH_1.5"] = { "highest": ['0', '0']}
+        AH_odds["AH_1.25"] = { "highest": ['0', '0']}
+        AH_odds["AH_1"] = { "highest": ['0', '0']}
+        AH_odds["AH_0.75"] = { "highest": ['0', '0']}
+        AH_odds["AH_0.5"] = { "highest": ['0', '0']}
+        AH_odds["AH_0.25"] = { "highest": ['0', '0']}
+        AH_odds["AH_0"] = { "highest": ['0', '0']}
+        AH_odds["AH_p2"] = { "highest": ['0', '0']}
+        AH_odds["AH_p1.75"] = { "highest": ['0', '0']}
+        AH_odds["AH_p1.5"] = { "highest": ['0', '0']}
+        AH_odds["AH_p1.25"] = { "highest": ['0', '0']}
+        AH_odds["AH_p1"] = { "highest": ['0', '0']}
+        AH_odds["AH_p0.75"] = { "highest": ['0', '0']}
+        AH_odds["AH_p0.5"] = { "highest": ['0', '0']}
+        AH_odds["AH_p0.25"] = { "highest": ['0', '0']}
+        
     else:
         ah_values_object = {}
         for index in range(0, len(AH_elements)):
