@@ -187,13 +187,13 @@ def get_odds(turl, OU_url , AH_url):
     driver1 = webdriver.Chrome(driverpath, options=chrome_options)
     driver1.get(turl)
     driver1.refresh()
-    time.sleep(0.5)
+    time.sleep(1)
     ################################ driver setting part End #############################`
     
     ############## 3 way result ###################################################################
     print("        * start scraping 1X2 data --------------------")
     main = driver1.find_element(By.TAG_NAME, 'main')
-    time.sleep(0.5)
+    time.sleep(1)
     high_elemnet = main.find_elements(By.TAG_NAME, '.bg-gray-light')
     if len(high_elemnet) > 2:
         high_ = high_elemnet[2]
@@ -224,7 +224,7 @@ def get_odds(turl, OU_url , AH_url):
     
     driver1.get(OU_url)
     driver1.refresh()
-    time.sleep(0.5)
+    time.sleep(1)
     # wait = WebDriverWait(driver1, 20)
     # wait.until(EC.presence_of_element_located((By.ID, 'odds-data-table')))
     
@@ -273,7 +273,7 @@ def get_odds(turl, OU_url , AH_url):
     "AH_p2":{'highest': ['0', '0']}, "AH_p1.75":{'highest': ['0', '0']}, "AH_p1.5":{'highest': ['0', '0']}, "AH_p1.25":{'highest': ['0', '0']}, "AH_p1":{'highest': ['0', '0']}, "AH_p0.75":{'highest': ['0', '0']}, "AH_p0.5":{'highest': ['0', '0']}, "AH_p0.25":{'highest': ['0', '0']}}
     driver1.get(AH_url)
     driver1.refresh()
-    time.sleep(0.5)
+    time.sleep(1)
 
     main = driver1.find_element(By.TAG_NAME, 'main')
     time.sleep(1.5)
