@@ -438,7 +438,7 @@ def insert_Price_To_Matchplan(league, season):
             if(group_element):
                 # match field
                 print(f"    --- {league} {season} { str(int(index/2))} th match start---")
-                main_text_element = group_element.find_element(By.CSS_SELECTOR, '.relative.w-full')
+                main_text_element = group_element.find_element(By.CSS_SELECTOR, '.flex.w-full')
                 home_team = main_text_element.find_elements_by_tag_name("a")[0].get_attribute('title')
                 away_team = main_text_element.find_elements_by_tag_name("a")[1].get_attribute('title')
                 print(f"          {match_date} , {home_team} - {away_team} ")

@@ -413,10 +413,10 @@ def insert_price_to_matchplan(league, season, breakFlag = True, startPage = None
 
     ###################### going to result page ###############################
     if season == "":
-        page_url = site_url + "soccer/" + league + season + "/results/"
+        page_url = site_url + "football/" + league + season + "/results/"
         current_season = True
     else:
-        page_url = site_url +"soccer/" + league + "-" + season + "/results/"
+        page_url = site_url +"football/" + league + "-" + season + "/results/"
     driver.get(page_url)
 
     time.sleep(2)
@@ -462,7 +462,7 @@ def insert_price_to_matchplan(league, season, breakFlag = True, startPage = None
                 if(group_element):
                     # match field
                     print(f"    --- {league} {season} {page} page { str(int(index/2))} th match start---")
-                    main_text_element = group_element.find_element(By.CSS_SELECTOR, '.relative.w-full')
+                    main_text_element = group_element.find_element(By.CSS_SELECTOR, '.flex.w-full')
                     home_team = main_text_element.find_elements_by_tag_name("a")[0].get_attribute('title')
                     away_team = main_text_element.find_elements_by_tag_name("a")[1].get_attribute('title')
                     print(f"        {match_date} , {home_team} - {away_team} ")
