@@ -471,12 +471,12 @@ def insert_price_to_matchplan(league, season, breakFlag = True, startPage = None
                     if current_season & (status == "No update"):
                             print("     * No need to update , this is already inserted!")
                             breakflag = 1
-                            if breakFlag:
-                                break
+                            # if breakFlag:
+                            #     break
             index  += 1
-        if breakflag:
-            breakflag = 0
-            break
+        # if breakflag:
+        #     breakflag = 0
+        #     break
         print(f"---------------- {league} - {season} {page}page End--------------------------------")
     driver.quit()
 
