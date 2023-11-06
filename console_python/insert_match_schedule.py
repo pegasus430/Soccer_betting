@@ -183,7 +183,10 @@ def doing_scraping_match_plan(season=None , league=None, firstMatch = None, last
 								print("    this is dec game")
 							elif "abor." in match_total_result:
 								print("    this is aborted game")
-							elif '-' not in match_total_result:				# END game but no half score
+							elif "WO" in match_total_result:
+								print(' this game is WO game.')
+							elif '-' not in match_total_result:	
+								# END game but no half score
 								print("   Special Match was finished , will update soon")
 								total = match_total_result.split(" ")[0]
 								
