@@ -211,7 +211,7 @@ def get_odds(turl, OU_url , AH_url):
             if av_values[i].text == "-" or av_values[i].text == "":
               highest_list.append("0")
             else: 
-              highest_list.append(av_values[i].text)
+              highest_list.append(convert_odds(av_values[i].text))
 
     three_way = {"highest": highest_list}
     # print("   three_way ", three_way)
@@ -247,7 +247,7 @@ def get_odds(turl, OU_url , AH_url):
                         if av_values[i].text == "-" or av_values[i].text == "":
                             highest_list.append("0")
                         else:
-                            highest_list.append(av_values[i].text)
+                            highest_list.append(convert_odds(av_values[i].text))
                 else:
                     highest_list = ['0', '0']
                 break
@@ -301,7 +301,7 @@ def get_odds(turl, OU_url , AH_url):
                     if av_values[i].text == '-' or av_values[i].text == '':
                         highest_list.append('0')
                     else:
-                        highest_list.append(av_values[i].text)
+                        highest_list.append(convert_odds(av_values[i].text))
             else:
                 highest_list = ['0', '0']
             ah_values_object[ah_name] = {'highest': highest_list}
@@ -482,6 +482,21 @@ def insert_price_to_matchplan(league, season, breakFlag = True, startPage = None
         print(f"---------------- {league} - {season} {page}page End--------------------------------")
     driver.quit()
 
+# function for converting UK odds to EU odds
+def convert_odds(uk_odds):
+    if '/' in uk_odds:
+        a_b_list = uk_odds.split('/')
+        if len(a_b_list) == 2:
+            a = int(a_b_list[0].strip())
+            b = int(a_b_list[1].strip())
+            eu_odd = 1 + round(a/b , 2)
+            eu_odd = '%.2f' % eu_odd
+            return str(eu_odd)
+        else:
+            return '0'
+    else:
+        return '0'
+    
 insert_price_to_matchplan("england/premier-league",   "")
 insert_price_to_matchplan("spain/laliga",             "")
 insert_price_to_matchplan("germany/bundesliga",       "")

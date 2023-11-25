@@ -208,7 +208,7 @@ def get_odds(turl, OU_url , AH_url):
                     if av_values[i].text == "-" or av_values[i].text == "":
                         highest_list.append("0")
                     else: 
-                        highest_list.append(av_values[i].text)
+                        highest_list.append(convert_odds(av_values[i].text))
             else:
                 highest_list = ['0', '0', '0']
         else:
@@ -256,7 +256,7 @@ def get_odds(turl, OU_url , AH_url):
                             if av_values[i].text == "-" or av_values[i].text == "":
                                 highest_list.append("0")
                             else:
-                                highest_list.append(av_values[i].text)
+                                highest_list.append(convert_odds(av_values[i].text))
                     else:
                         highest_list = ['0', '0']
                     break
@@ -299,7 +299,7 @@ def get_odds(turl, OU_url , AH_url):
                         if av_values[i].text == '' or  av_values[i].text == '-':
                             highest_list.append('0')
                         else:
-                            highest_list.append(av_values[i].text)
+                            highest_list.append(convert_odds(av_values[i].text))
                 else:
                     highest_list = ['0', '0']
                 ah_values_object[ah_name] = {'highest': highest_list}
@@ -403,7 +403,7 @@ def getDate_from_trTxt(date_txt):
         tomorrow = datetime.now() + timedelta(1)
         return datetime.strftime(tomorrow, '%Y-%m-%d')
     else:
-        date_part = date_txt.split(' ');
+        date_part = date_txt.split(' ')
         return date_part[2] + "-" +switch_month(date_part[1]) + '-' + date_part[0]
 
 def insert_Price_To_Matchplan(league, season):
@@ -454,6 +454,21 @@ def insert_Price_To_Matchplan(league, season):
 
     print(f"---------------- {league} -  End--------------------------------")
     driver.quit()
+
+# function for converting UK odds to EU odds
+def convert_odds(uk_odds):
+    if '/' in uk_odds:
+        a_b_list = uk_odds.split('/')
+        if len(a_b_list) == 2:
+            a = int(a_b_list[0].strip())
+            b = int(a_b_list[1].strip())
+            eu_odd = 1 + round(a/b , 2)
+            eu_odd = '%.2f' % eu_odd
+            return str(eu_odd)
+        else:
+            return '0'
+    else:
+        return '0'
 
 insert_Price_To_Matchplan("england/premier-league",   "2023-2024")
 insert_Price_To_Matchplan("spain/laliga",             "2023-2024")
