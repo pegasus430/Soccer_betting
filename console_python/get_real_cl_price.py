@@ -561,7 +561,7 @@ def update_real_mo_price_id_toSeasonMatchPlanTable(week_number):
 		away_cream_text = get_Team_Cream_text(result[3], result[4])
 		cl_refer_txt = league_title + home_cream_text + ' v ' + away_cream_text
 
-		query_sql = f"select id from real_mo_price_cl where refer = '{cl_refer_txt}' and c_week_number = 647"   # always 647 week
+		query_sql = f"select id from real_mo_price_cl where refer = '{cl_refer_txt}' and c_week_number = 700"   # update with c_week_number as 700 : start of the this season
 		mycursor.execute(query_sql)
 		price_id = mycursor.fetchone()
 
@@ -596,7 +596,7 @@ def update_real_AH_price_id_toSeasonMatchPlanTable(week_number):
         away_cream_text = get_Team_Cream_text(result[3], result[4])
         cl_refer_txt = league_title + home_cream_text + ' v ' + away_cream_text
 
-        query_sql = f"select id from real_ah_price_cl where refer = '{cl_refer_txt}' and c_week_number = 647"
+        query_sql = f"select id from real_ah_price_cl where refer = '{cl_refer_txt}' and c_week_number = 700" # updat with c_week_number as 700 : start of the this season
         mycursor.execute(query_sql)
         price_id = mycursor.fetchone()
 
