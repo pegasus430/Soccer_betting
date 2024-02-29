@@ -443,11 +443,12 @@ def insert_Price_To_Matchplan(league, season):
                 # match field
                 print(f"    --- {league} {season} { str(int(index/2))} th match start---")
                 main_text_element = group_element.find_element(By.CSS_SELECTOR, '.flex.w-full')
+                href_a_url = group_element.find_element(By.TAG_NAME, ("a"))
                 team_elements = main_text_element.find_elements(By.TAG_NAME, ("a"))
                 home_team = team_elements[0].get_attribute('title')
-                away_team = team_elements[1].get_attribute('title')
+                away_team = team_elements[2].get_attribute('title')
                 print(f"          {match_date} , {home_team} - {away_team} ")
-                hrefUrl = team_elements[1].get_attribute('href')
+                hrefUrl = href_a_url.get_attribute('href')
                 status = insert_update_odds(hrefUrl, match_date, home_team, away_team )
         
         index += 1    

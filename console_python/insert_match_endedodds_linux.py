@@ -465,10 +465,11 @@ def insert_price_to_matchplan(league, season, breakFlag = True, startPage = None
                     print(f"    --- {league} {season} {page} page { str(int(index/2))} th match start---")
                     main_text_element = group_element.find_element(By.CSS_SELECTOR, '.flex.w-full')
                     team_elements = main_text_element.find_elements(By.TAG_NAME, ("a"))
+                    href_a_element = main_text_element.find_element(By.TAG_NAME, ("a"))
                     home_team = team_elements[0].get_attribute('title')
-                    away_team = team_elements[1].get_attribute('title')
+                    away_team = team_elements[2].get_attribute('title')
                     print(f"        {match_date} , {home_team} - {away_team} ")
-                    hrefUrl = team_elements[1].get_attribute('href')
+                    hrefUrl = href_a_element.get_attribute('href')
                     status = insert_odds(hrefUrl, match_date, home_team, away_team )
                     if current_season & (status == "No update"):
                             print("     * No need to update , this is already inserted!")
