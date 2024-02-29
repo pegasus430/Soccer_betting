@@ -110,10 +110,10 @@ def doing_scraping_match_plan(season=None , league=None, firstMatch = None, last
 			home_team_id = myresult[0][0]
 			away_team_id = myresult[1][0]
 			
-			total_home_score = "-"
-			total_away_score = "-"
-			half_home_score = "-"
-			half_away_score = "-"
+			total_home_score = 0
+			total_away_score = 0
+			half_home_score = 0
+			half_away_score = 0
 
 			#sql = f"SELECT * from season_match_plan where season_id = {switch_season(season)} and league_id = {switch_league(league)} and home_team_id = {home_team_id} and away_team_id = {away_team_id} and date = '{match_date}'"
 			
