@@ -13,12 +13,12 @@ http = urllib3.PoolManager( cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 #################################################################
 
 season_array1 = [19, 17, 15, 13, 1, 2, 3, 4, 5, 12, 799, 857, 935, 1027]         # 2022-2023 style
-season_array2 = [20, 18, 16, 14, 6, 7, 8, 9, 10, 11, 64, 844, 916, 1013]         # 2021 style
+season_array2 = [20, 18, 16, 14, 6, 7, 8, 9, 10, 11, 64, 844, 916, 1013, 1101]         # 2021 style
 
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="P@ssw0rd2021",
+    passwd="password",
     database="soccer"
 )
 mycursor = mydb.cursor(buffered=True)
@@ -29,7 +29,7 @@ def insert_team_point_to_DB():
   mycursor.execute(sql)
   myresult = mycursor.fetchall()
 
-  for i in range(4124, 4428):   # here the sequence...... index - 1  2022-2023 from 3853
+  for i in range(4444, 4476):   # here the sequence...... index - 1  2022-2023 from 3853
       season_id = myresult[i][0]
       league_id = myresult[i][1]
       team_id = myresult[i][2]

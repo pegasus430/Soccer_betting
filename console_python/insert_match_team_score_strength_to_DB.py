@@ -38,7 +38,8 @@ def switch_season(argument):
 		"2020": 64,
 		"2021": 844,
   		"2022": 916,
-    	"2023": 1013
+    	"2023": 1013,
+		"2024": 1101,
 	}
 	return switcher.get(argument, "null")
 
@@ -77,7 +78,7 @@ def switch_league(argument):
 mydb = mysql.connector.connect(
 	host="localhost",
 	user="root",
-	passwd="P@ssw0rd2021",
+	passwd="password",
 	database="soccer"
 )
 mycursor = mydb.cursor(buffered=True)

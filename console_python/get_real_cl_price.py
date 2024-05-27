@@ -12,7 +12,7 @@ from collections import defaultdict
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="P@ssw0rd2021",
+    passwd="password",
     database="soccer"
 )
 
@@ -48,6 +48,7 @@ def switch_season(argument):
 		"2021": 844,
   		"2022": 916,
         "2023": 1013,
+		"2024": 1101,
 	}
     return switcher.get(argument, "null")
 
@@ -561,7 +562,7 @@ def update_real_mo_price_id_toSeasonMatchPlanTable(week_number):
 		away_cream_text = get_Team_Cream_text(result[3], result[4])
 		cl_refer_txt = league_title + home_cream_text + ' v ' + away_cream_text
 
-		query_sql = f"select id from real_mo_price_cl where refer = '{cl_refer_txt}' and c_week_number = 700"   # update with c_week_number as 700 : start of the this season
+		query_sql = f"select id from real_mo_price_cl where refer = '{cl_refer_txt}' and c_week_number = 700" 
 		mycursor.execute(query_sql)
 		price_id = mycursor.fetchone()
 
@@ -596,7 +597,7 @@ def update_real_AH_price_id_toSeasonMatchPlanTable(week_number):
         away_cream_text = get_Team_Cream_text(result[3], result[4])
         cl_refer_txt = league_title + home_cream_text + ' v ' + away_cream_text
 
-        query_sql = f"select id from real_ah_price_cl where refer = '{cl_refer_txt}' and c_week_number = 700" # updat with c_week_number as 700 : start of the this season
+        query_sql = f"select id from real_ah_price_cl where refer = '{cl_refer_txt}' and c_week_number = 700"
         mycursor.execute(query_sql)
         price_id = mycursor.fetchone()
 
@@ -622,8 +623,8 @@ def main():
     # for C_weeknumber in range(691, 699):
     # 	get_realprice_toRealPriceTable_perweek(C_weeknumber)
    
-    get_realprice_toRealPriceTable_perweek(725)
-    matching_realpriceid_toSeasonMatchPlanColumn(725)
+    get_realprice_toRealPriceTable_perweek(753)
+    matching_realpriceid_toSeasonMatchPlanColumn(753)
     
 	
 if __name__ == "__main__":

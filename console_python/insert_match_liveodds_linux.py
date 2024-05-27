@@ -72,7 +72,8 @@ def switch_season(argument):
         "2022" : 916,
         "2022-2023" : 935,
         "2023" : 1013,
-        "2023-2024" : 1027
+        "2023-2024" : 1027,
+        "2024": 1101,
     }
     return switcher.get(argument, "null")
   
@@ -403,7 +404,7 @@ def getDate_from_trTxt(date_txt):
         tomorrow = datetime.now() + timedelta(1)
         return datetime.strftime(tomorrow, '%Y-%m-%d')
     else:
-        date_part = date_txt.split(' ')
+        date_part = date_txt.split(' ');
         return date_part[2] + "-" +switch_month(date_part[1]) + '-' + date_part[0]
 
 def insert_Price_To_Matchplan(league, season):
@@ -443,12 +444,12 @@ def insert_Price_To_Matchplan(league, season):
                 # match field
                 print(f"    --- {league} {season} { str(int(index/2))} th match start---")
                 main_text_element = group_element.find_element(By.CSS_SELECTOR, '.flex.w-full')
-                href_a_url = group_element.find_element(By.TAG_NAME, ("a"))
                 team_elements = main_text_element.find_elements(By.TAG_NAME, ("a"))
+                href_a_element = group_element.find_element(By.TAG_NAME, ("a"))
                 home_team = team_elements[0].get_attribute('title')
                 away_team = team_elements[2].get_attribute('title')
                 print(f"          {match_date} , {home_team} - {away_team} ")
-                hrefUrl = href_a_url.get_attribute('href')
+                hrefUrl = href_a_element.get_attribute('href')
                 status = insert_update_odds(hrefUrl, match_date, home_team, away_team )
         
         index += 1    
@@ -458,6 +459,7 @@ def insert_Price_To_Matchplan(league, season):
 
 # function for converting UK odds to EU odds
 def convert_odds(uk_odds):
+    
     if '/' in uk_odds:
         a_b_list = uk_odds.split('/')
         if len(a_b_list) == 2:
@@ -481,8 +483,8 @@ insert_Price_To_Matchplan("austria/tipico-bundesliga","2023-2024")
 insert_Price_To_Matchplan("portugal/primeira-liga",   "2023-2024")
 insert_Price_To_Matchplan("greece/super-league",      "2023-2024")
 insert_Price_To_Matchplan("turkey/super-lig",         "2023-2024")
-insert_Price_To_Matchplan("norway/eliteserien",       "2023")
-insert_Price_To_Matchplan("sweden/allsvenskan",       "2023")
+insert_Price_To_Matchplan("norway/eliteserien",       "2024")
+insert_Price_To_Matchplan("sweden/allsvenskan",       "2024")
 insert_Price_To_Matchplan("switzerland/super-league", "2023-2024")
 insert_Price_To_Matchplan("denmark/superliga",        "2023-2024")
 insert_Price_To_Matchplan("ukraine/premier-league",   "2023-2024")
@@ -490,7 +492,7 @@ insert_Price_To_Matchplan("bulgaria/parva-liga",      "2023-2024")
 insert_Price_To_Matchplan("czech-republic/1-liga",    "2023-2024")
 insert_Price_To_Matchplan("croatia/1-hnl",            "2023-2024")
 insert_Price_To_Matchplan("hungary/otp-bank-liga",    "2023-2024")
-# insert_Price_To_Matchplan("serbia/super-liga",        "2023-2024")
+insert_Price_To_Matchplan("serbia/super-liga",        "2023-2024")
 
 print(" Total inserted count is : ", total_inserted_count)
 print(" Total updated count is : ", total_updated_count)

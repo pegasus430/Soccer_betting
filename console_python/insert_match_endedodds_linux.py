@@ -63,7 +63,7 @@ def switch_month(argument):
 
 def switch_season(argument):
     switcher = {
-        "2022" : 916,
+        "2024" : 1101,
         "2023" : 1013,
         "2022-2023" : 935,
         "2023-2024" : 1027,
@@ -464,8 +464,8 @@ def insert_price_to_matchplan(league, season, breakFlag = True, startPage = None
                     # match field
                     print(f"    --- {league} {season} {page} page { str(int(index/2))} th match start---")
                     main_text_element = group_element.find_element(By.CSS_SELECTOR, '.flex.w-full')
+                    href_a_element = group_element.find_element(By.TAG_NAME, ("a"))
                     team_elements = main_text_element.find_elements(By.TAG_NAME, ("a"))
-                    href_a_element = main_text_element.find_element(By.TAG_NAME, ("a"))
                     home_team = team_elements[0].get_attribute('title')
                     away_team = team_elements[2].get_attribute('title')
                     print(f"        {match_date} , {home_team} - {away_team} ")
@@ -517,6 +517,6 @@ insert_price_to_matchplan("bulgaria/parva-liga",      "")
 insert_price_to_matchplan("czech-republic/1-liga",    "")
 insert_price_to_matchplan("croatia/1-hnl",            "")
 insert_price_to_matchplan("hungary/otp-bank-liga",    "")
-# insert_price_to_matchplan("serbia/super-liga",        "")
+insert_price_to_matchplan("serbia/super-liga",        "")
 
 print(" Total added count is : ", total_added_count)

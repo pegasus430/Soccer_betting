@@ -16,15 +16,14 @@ http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="P@ssw0rd2021",
+    passwd="password",
     database="soccer"
 )
 mycursor = mydb.cursor(buffered=True)
 
 def switch_season(argument):
     switcher = {
-        "2022" : 916,
-        "2022-2023" : 935,
+        "2024": 1101,
         "2023": 1013,
         "2023-2024": 1027
     }
@@ -183,10 +182,7 @@ def doing_scraping_match_plan(season=None , league=None, firstMatch = None, last
 								print("    this is dec game")
 							elif "abor." in match_total_result:
 								print("    this is aborted game")
-							elif "WO" in match_total_result:
-								print(' this game is WO game.')
-							elif '-' not in match_total_result:	
-								# END game but no half score
+							elif '-' not in match_total_result:				# END game but no half score
 								print("   Special Match was finished , will update soon")
 								total = match_total_result.split(" ")[0]
 								
@@ -669,7 +665,10 @@ def add_extra_player(player_name, player_adding_info, team_id):
 	print(f"   this is new - {player_name} : {player_birthday}")
 	sql = "INSERT INTO soccer.playerlist (player_name, birthday , nationality, img_src, height, weight, foot" \
 		", position , now_pNumber, now_team_id ) VALUES (%s, %s , %s, %s, %s, %s, %s, %s,%s, %s)"
-	val = (player_name, player_birthday, player_nation, player_adding_info[0], "???", player_adding_info[3], player_adding_info[4], "??", player_adding_info[5], team_id)
+	if player_adding_info[5]:
+		val = (player_name, player_birthday, player_nation, player_adding_info[0], "???", player_adding_info[3], player_adding_info[4], "??", player_adding_info[5], team_id)
+	else:
+		val = (player_name, player_birthday, player_nation, player_adding_info[0], "???", player_adding_info[3], player_adding_info[4], "??", '0', team_id)
 	mycursor.execute(sql, val)
 	mydb.commit()
 	
@@ -881,13 +880,13 @@ def main():
 	doing_scraping_match_plan("2023-2024", "ita-serie-a")
 	doing_scraping_match_plan("2023-2024", "ned-eredivisie")
 	doing_scraping_match_plan("2023-2024", "por-primeira-liga")
-	# doing_scraping_match_plan("2023-2024", "srb-super-liga", firstMatch = None, lastMatch = None, newInsertFlag = True)
+	doing_scraping_match_plan("2023-2024", "srb-super-liga")
 	doing_scraping_match_plan("2023-2024", "esp-primera-division")
 	doing_scraping_match_plan("2023-2024", "sui-super-league")
 	doing_scraping_match_plan("2023-2024", "tur-sueperlig")
 	doing_scraping_match_plan("2023-2024", "ukr-premyer-liga")
-	doing_scraping_match_plan("2023", "swe-allsvenskan")
-	doing_scraping_match_plan("2023", "nor-eliteserien")
+	doing_scraping_match_plan("2024", "swe-allsvenskan")
+	doing_scraping_match_plan("2024", "nor-eliteserien")
 	doing_scraping_match_plan("2023-2024", "cro-1-hnl")
 	doing_scraping_match_plan("2023-2024", "hun-nb-i")
  

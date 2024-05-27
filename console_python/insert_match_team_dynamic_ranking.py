@@ -39,11 +39,12 @@ def switch_season(argument):
 		"2021": 844,
         "2022": 916,
         "2023": 1013,
+        "2024": 1101,
 	}
     return switcher.get(argument, "null")
 
 season_array1 = [19, 17, 15, 13, 1, 2, 3, 4, 5, 12, 799, 857, 935, 1027]         # 2021-2022 style
-season_array2 = [20, 18, 16, 14, 6, 7, 8, 9, 10, 11, 64, 844, 916, 1013]         # 2021 style
+season_array2 = [20, 18, 16, 14, 6, 7, 8, 9, 10, 11, 64, 844, 916, 1013, 1101]         # 2021 style
 
 def switch_league(argument):
     switcher = {	
@@ -80,7 +81,7 @@ def switch_league(argument):
 mydb = mysql.connector.connect( 
     host="localhost",
     user="root",
-    passwd="P@ssw0rd2021",
+    passwd="password",
     database="soccer"
 )
 mycursor = mydb.cursor(buffered=True)
@@ -165,6 +166,7 @@ def insert_match_team_dynamic_ranking_8(league, season, target_status):
                       for eachMatch in previous_num_Match_Results:      # loop previous results to get aver Dynamic ranking
                             HRS += (int(eachMatch[0]) + int(eachMatch[1]))
                       HRS /= moving_num
+                      HRS = round(HRS, 3)
                       D_Home_RS = str(HRS)
                       D_Home_ranking = str(getRangeValue(HRS))
                                 
@@ -185,6 +187,7 @@ def insert_match_team_dynamic_ranking_8(league, season, target_status):
                         HRS += (int(eachMatch[0]) + int(eachMatch[1]))
                     
                     HRS /= moving_num
+                    HRS = round(HRS, 3)
                     D_Home_RS = str(HRS)
                     D_Home_ranking = str(getRangeValue(HRS))
                 else:
@@ -196,6 +199,7 @@ def insert_match_team_dynamic_ranking_8(league, season, target_status):
                         #if eachMatch[0] != "":
                         HRS += (int(eachMatch[0]) + int(eachMatch[1]))
                     HRS /= moving_num
+                    HRS = round(HRS, 3)
                     D_Home_RS = str(HRS)
                     D_Home_ranking = str(getRangeValue(HRS))
             sql = f"update season_match_plan set D_Home_RS_8 = '{D_Home_RS}', D_Home_ranking_8 = '{D_Home_ranking}', HPPG = '{HPPG}', HGDPG = '{HGDPG}' where match_id = {nowMatch_id}"
@@ -249,6 +253,7 @@ def insert_match_team_dynamic_ranking_8(league, season, target_status):
                       for eachMatch in previous_num_Match_Results:      # loop previous results to get aver Dynamic ranking
                           ARS += (int(eachMatch[0]) + int(eachMatch[1]))
                       ARS /= moving_num
+                      ARS = round(ARS, 3)
                       D_Away_RS = str(ARS)
                       D_Away_ranking = str(getRangeValue(ARS))
                 
@@ -270,6 +275,7 @@ def insert_match_team_dynamic_ranking_8(league, season, target_status):
                         ARS += (int(eachMatch[0]) + int(eachMatch[1]))
                     
                     ARS /= moving_num
+                    ARS = round(ARS, 3)
                     D_Away_RS = str(ARS)
                     D_Away_ranking = str(getRangeValue(ARS))
                 else:
@@ -281,6 +287,7 @@ def insert_match_team_dynamic_ranking_8(league, season, target_status):
                         if eachMatch[0] != "":
                             ARS += (int(eachMatch[0]) + int(eachMatch[1]))
                     ARS /= moving_num
+                    ARS = round(ARS, 3)
                     D_Away_RS = str(ARS)
                     D_Away_ranking = str(getRangeValue(ARS))
             
@@ -379,6 +386,7 @@ def insert_match_team_dynamic_ranking_6(league, season, target_status):
                       for eachMatch in previous_num_Match_Results:      # loop previous results to get aver Dynamic ranking
                             HRS += (int(eachMatch[0]) + int(eachMatch[1]))
                       HRS /= moving_num
+                      HRS = round(HRS, 3)
                       D_Home_RS = str(HRS)
                       D_Home_ranking = str(getRangeValue(HRS))
                                 
@@ -399,6 +407,7 @@ def insert_match_team_dynamic_ranking_6(league, season, target_status):
                         HRS += (int(eachMatch[0]) + int(eachMatch[1]))
                     
                     HRS /= moving_num
+                    HRS = round(HRS, 3)
                     D_Home_RS = str(HRS)
                     D_Home_ranking = str(getRangeValue(HRS))
                 else:
@@ -410,6 +419,7 @@ def insert_match_team_dynamic_ranking_6(league, season, target_status):
                         #if eachMatch[0] != "":
                         HRS += (int(eachMatch[0]) + int(eachMatch[1]))
                     HRS /= moving_num
+                    HRS = round(HRS, 3)
                     D_Home_RS = str(HRS)
                     D_Home_ranking = str(getRangeValue(HRS))
             sql = f"update season_match_plan set D_Home_RS_6 = '{D_Home_RS}', D_Home_ranking_6 = '{D_Home_ranking}', HPPG = '{HPPG}', HGDPG = '{HGDPG}' where match_id = {nowMatch_id}"
@@ -463,6 +473,7 @@ def insert_match_team_dynamic_ranking_6(league, season, target_status):
                       for eachMatch in previous_num_Match_Results:      # loop previous results to get aver Dynamic ranking
                           ARS += (int(eachMatch[0]) + int(eachMatch[1]))
                       ARS /= moving_num
+                      ARS = round(ARS, 3)
                       D_Away_RS = str(ARS)
                       D_Away_ranking = str(getRangeValue(ARS))
                 
@@ -484,6 +495,8 @@ def insert_match_team_dynamic_ranking_6(league, season, target_status):
                         ARS += (int(eachMatch[0]) + int(eachMatch[1]))
                     
                     ARS /= moving_num
+                    ARS = round(ARS, 3)
+                    ARS = round(ARS, 3)
                     D_Away_RS = str(ARS)
                     D_Away_ranking = str(getRangeValue(ARS))
                 else:
@@ -495,6 +508,7 @@ def insert_match_team_dynamic_ranking_6(league, season, target_status):
                         if eachMatch[0] != "":
                             ARS += (int(eachMatch[0]) + int(eachMatch[1]))
                     ARS /= moving_num
+                    ARS = round(ARS, 3)
                     D_Away_RS = str(ARS)
                     D_Away_ranking = str(getRangeValue(ARS))
             
@@ -540,8 +554,8 @@ def main():
     insert_match_team_dynamic_ranking_8("por-primeira-liga",        "2023-2024", "END")
     insert_match_team_dynamic_ranking_8("gre-super-league",         "2023-2024", "END")
     insert_match_team_dynamic_ranking_8("tur-sueperlig",            "2023-2024", "END")
-    insert_match_team_dynamic_ranking_8("nor-eliteserien",          "2023",      "END")
-    insert_match_team_dynamic_ranking_8("swe-allsvenskan",          "2023",      "END")
+    insert_match_team_dynamic_ranking_8("nor-eliteserien",          "2024",      "END")
+    insert_match_team_dynamic_ranking_8("swe-allsvenskan",          "2024",      "END")
     insert_match_team_dynamic_ranking_8("sui-super-league",         "2023-2024", "END")
     insert_match_team_dynamic_ranking_8("den-superligaen",          "2023-2024", "END")
     insert_match_team_dynamic_ranking_8("ukr-premyer-liga",         "2023-2024", "END")
@@ -549,7 +563,7 @@ def main():
     insert_match_team_dynamic_ranking_8("cze-1-fotbalova-liga",     "2023-2024", "END")
     insert_match_team_dynamic_ranking_8("cro-1-hnl",                "2023-2024", "END")
     insert_match_team_dynamic_ranking_8("hun-nb-i",                 "2023-2024", "END")
-    # insert_match_team_dynamic_ranking_8("srb-super-liga",           "2023-2024", "END")
+    insert_match_team_dynamic_ranking_8("srb-super-liga",           "2023-2024", "END")
     
     insert_match_team_dynamic_ranking_6("eng-premier-league",       "2023-2024", "END")
     insert_match_team_dynamic_ranking_6("esp-primera-division",     "2023-2024", "END")
@@ -561,8 +575,8 @@ def main():
     insert_match_team_dynamic_ranking_6("por-primeira-liga",        "2023-2024", "END")
     insert_match_team_dynamic_ranking_6("gre-super-league",         "2023-2024", "END")
     insert_match_team_dynamic_ranking_6("tur-sueperlig",            "2023-2024", "END")
-    insert_match_team_dynamic_ranking_6("nor-eliteserien",          "2023",      "END")
-    insert_match_team_dynamic_ranking_6("swe-allsvenskan",          "2023",      "END")
+    insert_match_team_dynamic_ranking_6("nor-eliteserien",          "2024",      "END")
+    insert_match_team_dynamic_ranking_6("swe-allsvenskan",          "2024",      "END")
     insert_match_team_dynamic_ranking_6("sui-super-league",         "2023-2024", "END")
     insert_match_team_dynamic_ranking_6("den-superligaen",          "2023-2024", "END")
     insert_match_team_dynamic_ranking_6("ukr-premyer-liga",         "2023-2024", "END")
@@ -570,7 +584,7 @@ def main():
     insert_match_team_dynamic_ranking_6("cze-1-fotbalova-liga",     "2023-2024", "END")
     insert_match_team_dynamic_ranking_6("cro-1-hnl",                "2023-2024", "END")
     insert_match_team_dynamic_ranking_6("hun-nb-i",                 "2023-2024", "END")
-    # insert_match_team_dynamic_ranking_6("srb-super-liga",           "2023-2024", "END")
+    insert_match_team_dynamic_ranking_6("srb-super-liga",           "2023-2024", "END")
 
     insert_match_team_dynamic_ranking_8("eng-premier-league",       "2023-2024", "LIVE")
     insert_match_team_dynamic_ranking_8("esp-primera-division",     "2023-2024", "LIVE")
@@ -582,8 +596,8 @@ def main():
     insert_match_team_dynamic_ranking_8("por-primeira-liga",        "2023-2024", "LIVE")
     insert_match_team_dynamic_ranking_8("gre-super-league",         "2023-2024", "LIVE")
     insert_match_team_dynamic_ranking_8("tur-sueperlig",            "2023-2024", "LIVE")
-    insert_match_team_dynamic_ranking_8("nor-eliteserien",          "2023",      "LIVE")
-    insert_match_team_dynamic_ranking_8("swe-allsvenskan",          "2023",      "LIVE")
+    insert_match_team_dynamic_ranking_8("nor-eliteserien",          "2024",      "LIVE")
+    insert_match_team_dynamic_ranking_8("swe-allsvenskan",          "2024",      "LIVE")
     insert_match_team_dynamic_ranking_8("sui-super-league",         "2023-2024", "LIVE")
     insert_match_team_dynamic_ranking_8("den-superligaen",          "2023-2024", "LIVE")
     insert_match_team_dynamic_ranking_8("ukr-premyer-liga",         "2023-2024", "LIVE")
@@ -591,7 +605,7 @@ def main():
     insert_match_team_dynamic_ranking_8("cze-1-fotbalova-liga",     "2023-2024", "LIVE")
     insert_match_team_dynamic_ranking_8("cro-1-hnl",                "2023-2024", "LIVE")
     insert_match_team_dynamic_ranking_8("hun-nb-i",                 "2023-2024", "LIVE")
-    # insert_match_team_dynamic_ranking_8("srb-super-liga",           "2023-2024", "LIVE")
+    insert_match_team_dynamic_ranking_8("srb-super-liga",           "2023-2024", "LIVE")
     
     insert_match_team_dynamic_ranking_6("eng-premier-league",       "2023-2024", "LIVE")
     insert_match_team_dynamic_ranking_6("esp-primera-division",     "2023-2024", "LIVE")
@@ -603,8 +617,8 @@ def main():
     insert_match_team_dynamic_ranking_6("por-primeira-liga",        "2023-2024", "LIVE")
     insert_match_team_dynamic_ranking_6("gre-super-league",         "2023-2024", "LIVE")
     insert_match_team_dynamic_ranking_6("tur-sueperlig",            "2023-2024", "LIVE")
-    insert_match_team_dynamic_ranking_6("nor-eliteserien",          "2023",      "LIVE")
-    insert_match_team_dynamic_ranking_6("swe-allsvenskan",          "2023",      "LIVE")
+    insert_match_team_dynamic_ranking_6("nor-eliteserien",          "2024",      "LIVE")
+    insert_match_team_dynamic_ranking_6("swe-allsvenskan",          "2024",      "LIVE")
     insert_match_team_dynamic_ranking_6("sui-super-league",         "2023-2024", "LIVE")
     insert_match_team_dynamic_ranking_6("den-superligaen",          "2023-2024", "LIVE")
     insert_match_team_dynamic_ranking_6("ukr-premyer-liga",         "2023-2024", "LIVE")
@@ -612,7 +626,7 @@ def main():
     insert_match_team_dynamic_ranking_6("cze-1-fotbalova-liga",     "2023-2024", "LIVE")
     insert_match_team_dynamic_ranking_6("cro-1-hnl",                "2023-2024", "LIVE")
     insert_match_team_dynamic_ranking_6("hun-nb-i",                 "2023-2024", "LIVE")
-    # insert_match_team_dynamic_ranking_6("srb-super-liga",           "2023-2024", "LIVE")
+    insert_match_team_dynamic_ranking_6("srb-super-liga",           "2023-2024", "LIVE")
     
 if __name__ == "__main__":
     main()
